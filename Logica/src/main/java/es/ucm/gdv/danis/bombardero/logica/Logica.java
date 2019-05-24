@@ -17,7 +17,7 @@ public class Logica implements GameState {
     //Frames
     private float _lastFrame = 0;       //ultimo frame para el tiempo
     private float _frameRate;           //frames por segundo
-    private float time = 0;             //Contador de tiempo
+    private float _time = 0;             //Contador de tiempo
 
     //TABLERO
     private int _dificultad;
@@ -61,7 +61,7 @@ public class Logica implements GameState {
 
     void init(int d){
         _dificultad = d;
-        _frameRate = (float) 30f;
+        _frameRate = (float) (d + 1) / 30f;
         tablero = new info[Ancho_Tablero][Alto_Tablero];
         fillTablero();
     }
@@ -138,19 +138,18 @@ public class Logica implements GameState {
     }
 
     void tickPrueba(double elapsedTime) {
-        //TODO: Hacer esto con el elapsedTime -> va, pero o el frameRate es muy peque o el time va muy rapido
-        /*time += elapsedTime;
-        if (time > _lastFrame) {
-            _lastFrame = time + _frameRate;
+        _time += elapsedTime;
+        if (_time  > _lastFrame) {
+            _lastFrame = _time  + _frameRate;
 
-*/
-            posPruebaX += 1;
-            posPruebaY += 1;
+
+            posPruebaX += 15;
+            posPruebaY += 15;
 
 
             System.out.println("AAAAA - X "+ posPruebaX + "Y: " + posPruebaY);
 
-     //   }
+        }
     }
 
 
@@ -278,7 +277,7 @@ public class Logica implements GameState {
 
         int acumX = 0, acumY = 0;
         int t = 16;
-        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 12, 15,100, posPruebaX, posFinalY);
+        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 12, 15,100, posPruebaX, posPruebaY);
     }
  /*
         @Override

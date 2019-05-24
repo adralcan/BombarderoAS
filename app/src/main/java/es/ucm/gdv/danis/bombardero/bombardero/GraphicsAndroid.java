@@ -78,17 +78,18 @@ public class GraphicsAndroid implements Graphics {
     }
 
     @Override
-    public void drawImageFromSpritesheet(Image image, int x, int y, int extraTam, int imgX, int imgY) {
+    public void drawImageFromSpritesheet(Image image, int coordX, int coordY, int tam, int destX, int destY) {
         if (image != null) {
             ImageAndroid moc = (ImageAndroid) image;
             Bitmap bm = moc.getBitmap();
-            int tam = 16;
+            int tamSprite = 16;
 
             // Dos rectangulos
+            //Los sprites tienen un tamaño de 16 pixeles, por lo que las coordenadas son multiplos de 16
             //Primero el source que es el rectangulo que queremos usar y lueog el destino que es donde lo vamos a pintar
-            Rect sourceRect = new Rect(x*16, y*16, x*16 + tam, y*16 + tam);
+            Rect sourceRect = new Rect(coordX*16, coordY*16, coordX*16 + tamSprite, coordY*16 + tamSprite);
             Rect destinyRect = new Rect(
-                    imgX, imgY, imgX + extraTam, imgY + extraTam);
+                    destX, destY, destX + tam, destY + tam);
 
             _canvas.drawBitmap(bm, sourceRect, destinyRect, null);
         }
