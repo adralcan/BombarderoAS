@@ -27,7 +27,7 @@ public class GraphicsAndroid implements Graphics {
         _surfaceView = surfaceView;
         _assetManager = assetManager;
         _surfaceHolder = _surfaceView.getHolder();
-        _canvas = _surfaceHolder.lockCanvas();
+        _canvas = _surfaceView.getHolder().lockCanvas();
 
     }
 
@@ -55,13 +55,14 @@ public class GraphicsAndroid implements Graphics {
                     e.printStackTrace();
                 }
             }
-            return imageAndroid;
         }
+        return imageAndroid;
     }
 
     @Override
     public void clear(int color) {
-        while(!_surfaceHolder.getSurface().isValid());
+        while (!_surfaceHolder.getSurface().isValid()) {
+        }
         _canvas = _surfaceView.getHolder().lockCanvas();
         _canvas.drawColor(color);
     }
@@ -84,9 +85,9 @@ public class GraphicsAndroid implements Graphics {
 
             // Dos rectangulos
             //Primero el source que es el rectangulo que queremos usar y lueog el destino que es donde lo vamos a pintar
-            Rect sourceRect = new Rect(x, y, x+tam, y+tam);
+            Rect sourceRect = new Rect(x, y, x + tam, y + tam);
             Rect destinyRect = new Rect(
-                    imgX * 16,  imgY * 16, ((imgX * 16) + (moc.getWidth() / 16)), ((imgY*16) + (moc.getHeight()/ 16)));
+                    imgX * 16, imgY * 16, ((imgX * 16) + (moc.getWidth() / 16)), ((imgY * 16) + (moc.getHeight() / 16)));
 
             _canvas.drawBitmap(bm, sourceRect, destinyRect, null);
         }
@@ -103,4 +104,7 @@ public class GraphicsAndroid implements Graphics {
     }
 
 
+    public void present() {
+        _surfaceHolder.unlockCanvasAndPost(_canvas);
+    }
 }

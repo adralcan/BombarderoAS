@@ -1,6 +1,7 @@
 package es.ucm.gdv.danis.bombardero.fachada;
 
 
+import java.awt.event.MouseEvent;
 
 public class TouchEvent {
     public enum TouchType {
@@ -10,9 +11,18 @@ public class TouchEvent {
     private int _x;
     private int _y;
     private int _inputID;
-    private TouchEvent _touchEvent;
+    private TouchType _touchEvent;
 
-    public TouchEvent(int x, int y, TouchEvent touchEvent, int inputID) {
+    //Constructora de TouchEvent para PC
+    public TouchEvent(MouseEvent mouseEvent, TouchType touchType) {
+        _x = mouseEvent.getX();
+        _y = mouseEvent.getY();
+        _touchEvent = touchType;
+        _inputID = mouseEvent.getID(); //mouseEvent.getButton()-1?
+    }
+
+    //Constructora de TouchEvent para Android
+    public TouchEvent(int x, int y, TouchType touchEvent, int inputID) {
         _x = x;
         _y = y;
         _touchEvent = touchEvent;
@@ -31,7 +41,7 @@ public class TouchEvent {
         return _inputID;
     }
 
-    public TouchEvent get_touchEvent() {
+    public TouchType get_touchEvent() {
         return _touchEvent;
     }
 }

@@ -2,13 +2,14 @@ package es.ucm.gdv.danis.bombardero.logica;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 import es.ucm.gdv.danis.bombardero.fachada.Game;
 import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import es.ucm.gdv.danis.bombardero.fachada.Image;
-
+import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
 
 
 public class Logica implements GameState {
@@ -31,7 +32,7 @@ public class Logica implements GameState {
     private int yBomba = 0;
     //ATRIBUTOS
     private Game juego = null;
-    private Image spriteSheetNegra = null, javaTest=null;
+    private Image spriteSheetNegra, javaTest=null;
 
     private info [][] tablero;
 
@@ -45,7 +46,9 @@ public class Logica implements GameState {
     //Start
     public Logica(Game juego, int d){
         this.juego = juego;
-        spriteSheetNegra = juego.GetGraphics().newImage("./images/ASCII_00.png");
+        System.out.println("AAAAAAAA - VOY A CARGAR IMAGEN");
+        spriteSheetNegra = juego.GetGraphics().newImage("ASCII_03.png");
+        System.out.println("AAAAAAA - IMAGEN CARGADA!!");
         init(d);
     }
 
@@ -63,10 +66,10 @@ public class Logica implements GameState {
         }
 
         //Inicia los edificios
-        initEdificios(tablero);
+        //initEdificios(tablero);
 
         //Crea el avión y define la posición final
-        initAvion(tablero);
+        //initAvion(tablero);
 
     }
 
@@ -121,21 +124,21 @@ public class Logica implements GameState {
     //Update
     @Override
     public void tick(double elapsedTime){
-        tickBomba();
-        tickAvion();
+        //tickBomba();
+        //tickAvion();
     }
 
     void tickBomba(){
         //Bomba
         //Pide el input y revisa si se ha pulsado la pantalla.
         //Si se ha pulsado y no hubiera bomba, crea una
-        List<MouseEvent> listaEventos = juego.GetInput().getTouchEvents();
+        List<TouchEvent> listaEventos = juego.GetInput().getTouchEvents();
         int indiceEventos = 0;
 
-        while(!listaEventos.isEmpty()){
-            MouseEvent me = listaEventos.get(indiceEventos);
+       while(!listaEventos.isEmpty()){
+            TouchEvent touchEvent = listaEventos.get(indiceEventos);
             //Click izquierdo
-            if(me.getButton() == MouseEvent.BUTTON1){
+            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
                 //Creamos una bomba!
                 if(numBombas == 0 && !gameOver){
                     xBomba = xAvion+1;
@@ -243,6 +246,12 @@ public class Logica implements GameState {
 
     @Override
     public void render() {
+        //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 20, 20, 200,1,15);
+        juego.GetGraphics().drawImage(spriteSheetNegra, 20,20);
+    }
+ /*
+        @Override
+    public void render() {
 
         //int imgw = spriteSheetNegra.getWidth(), imgh = spriteSheetNegra.getHeight();
         //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x, y, 200,1,15);
@@ -286,7 +295,7 @@ public class Logica implements GameState {
             acumY += t;
         }
     }
-
+*/
     void CreaMatrixPrueba(){
         final info [][] test = {
                 { info.nada, info.avionCola, info.avionMorro, info.nada, info.nada},

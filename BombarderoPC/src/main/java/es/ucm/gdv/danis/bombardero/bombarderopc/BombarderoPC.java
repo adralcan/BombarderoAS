@@ -1,4 +1,4 @@
-package com.example.bombarderopc;
+package es.ucm.gdv.danis.bombardero.bombarderopc;
 
 
 import es.ucm.gdv.danis.bombardero.desktop.GamePC;
