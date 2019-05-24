@@ -69,11 +69,10 @@ public class GameAndroid implements Game, Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }*/
-            //Necesitamos llamar a start frame para hacer un nuevo canvas??
 
             _estadoJuego.render();
             _androidGraphics.present();
-            //Present por aquí o algo así
+
 
         }
     }

@@ -22,6 +22,7 @@ public class Logica implements GameState {
     //TABLERO
     private int _dificultad;
     public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion};
+    public enum Colores{negro, rojo};
 
     //AVION
     private int xAvion = 0;
@@ -54,7 +55,7 @@ public class Logica implements GameState {
     public Logica(Game juego, int d){
         this.juego = juego;
         System.out.println("AAAAAAAA - VOY A CARGAR IMAGEN");
-        spriteSheetNegra = juego.GetGraphics().newImage("ASCII_03.png");
+        spriteSheetNegra = juego.GetGraphics().newImage("ASCII_03.png"); //TODO: quitar esto de aqui, ahora está en Tile
         System.out.println("AAAAAAA - IMAGEN CARGADA!!");
         init(d);
     }
@@ -73,6 +74,7 @@ public class Logica implements GameState {
             }
         }
 
+        //TODO: Los init ahora se inician en plan usando Tile
         //Inicia los edificios
         //initEdificios(tablero);
 
@@ -122,6 +124,8 @@ public class Logica implements GameState {
         yAvionMorro = 3;
         yAvionCola = 2;
 
+        //Son dos tiles que siempre van juntos lmao
+        //Pero las variables si que las vamos a mantener
         _tablero[xAvion][yAvionCola] = info.avionCola;
         _tablero[xAvion][yAvionMorro] = info.avionMorro;
 
