@@ -78,16 +78,17 @@ public class GraphicsAndroid implements Graphics {
     }
 
     @Override
-    public void drawImageFromSpritesheet(Image image, int x, int y, int tam, int imgX, int imgY) {
+    public void drawImageFromSpritesheet(Image image, int x, int y, int extraTam, int imgX, int imgY) {
         if (image != null) {
             ImageAndroid moc = (ImageAndroid) image;
             Bitmap bm = moc.getBitmap();
+            int tam = 16;
 
             // Dos rectangulos
             //Primero el source que es el rectangulo que queremos usar y lueog el destino que es donde lo vamos a pintar
-            Rect sourceRect = new Rect(x, y, x + tam, y + tam);
+            Rect sourceRect = new Rect(x*16, y*16, x*16 + tam, y*16 + tam);
             Rect destinyRect = new Rect(
-                    imgX * 16, imgY * 16, ((imgX * 16) + (moc.getWidth() / 16)), ((imgY * 16) + (moc.getHeight() / 16)));
+                    imgX, imgY, imgX + extraTam, imgY + extraTam);
 
             _canvas.drawBitmap(bm, sourceRect, destinyRect, null);
         }

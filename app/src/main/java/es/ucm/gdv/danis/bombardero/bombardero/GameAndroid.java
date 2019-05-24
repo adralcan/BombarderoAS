@@ -65,14 +65,14 @@ public class GameAndroid implements Game, Runnable {
 
             _estadoJuego.tick(elapsedTime);
 
-            try {
+        /*    try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+        */
             //Necesitamos llamar a start frame para hacer un nuevo canvas??
-            _androidGraphics.clear(1);
+
             _estadoJuego.render();
             _androidGraphics.present();
             //Present por aquí o algo así

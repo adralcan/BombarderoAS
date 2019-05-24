@@ -9,7 +9,7 @@ public interface Graphics {
     //Prueba de pintar imagen a traves de un spritesheet
     //The src parameters represent the area of the image to copy and draw.
     //The dst parameters display the area of the destination to cover by the the source
-    void drawImageFromSpritesheet(Image image, int x, int y, int tam, int imgX, int imgY);
+    void drawImageFromSpritesheet(Image image, int x, int y, int extraTam, int imgX, int imgY);
 
     //Getters de la ventana
     int getWidth();                             //Ancho

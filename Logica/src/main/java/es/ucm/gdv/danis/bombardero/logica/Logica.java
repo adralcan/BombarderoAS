@@ -14,11 +14,14 @@ import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
 
 public class Logica implements GameState {
 
+    //Frames
+    private float _lastFrame = 0;       //ultimo frame para el tiempo
+    private float _frameRate;           //frames por segundo
+    private float time = 0;             //Contador de tiempo
+
     //TABLERO
     private int _dificultad;
     public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion};
-
-
 
     //AVION
     private int xAvion = 0;
@@ -30,6 +33,7 @@ public class Logica implements GameState {
     public int numBombas = 0;
     private int xBomba = 0;
     private int yBomba = 0;
+
     //ATRIBUTOS
     private Game juego = null;
     private Image spriteSheetNegra, javaTest=null;
@@ -42,6 +46,9 @@ public class Logica implements GameState {
 
     private boolean gameOver = false;
 
+    //Pruebas
+    private int posPruebaX = 20;
+    private int posPruebaY = 20;
 
     //Start
     public Logica(Game juego, int d){
@@ -54,6 +61,7 @@ public class Logica implements GameState {
 
     void init(int d){
         _dificultad = d;
+        _frameRate = (float) 30f;
         tablero = new info[Ancho_Tablero][Alto_Tablero];
         fillTablero();
     }
@@ -126,9 +134,27 @@ public class Logica implements GameState {
     public void tick(double elapsedTime){
         //tickBomba();
         //tickAvion();
+        tickPrueba(elapsedTime);
     }
 
-    void tickBomba(){
+    void tickPrueba(double elapsedTime) {
+        //TODO: Hacer esto con el elapsedTime -> va, pero o el frameRate es muy peque o el time va muy rapido
+        /*time += elapsedTime;
+        if (time > _lastFrame) {
+            _lastFrame = time + _frameRate;
+
+*/
+            posPruebaX += 1;
+            posPruebaY += 1;
+
+
+            System.out.println("AAAAA - X "+ posPruebaX + "Y: " + posPruebaY);
+
+     //   }
+    }
+
+
+    void tickBomba(double elapsedTime){
         //Bomba
         //Pide el input y revisa si se ha pulsado la pantalla.
         //Si se ha pulsado y no hubiera bomba, crea una
@@ -192,7 +218,7 @@ public class Logica implements GameState {
 
         }
     }
-    void tickAvion(){
+    void tickAvion(double elapsedTime){
         //Mueve el avión e interpreta colisiones, de haberlas
         //Movimiento horizontal y comprobacion
         if(tablero[xAvion][yAvionMorro+1] == info.nada){
@@ -247,7 +273,12 @@ public class Logica implements GameState {
     @Override
     public void render() {
         //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 20, 20, 200,1,15);
-        juego.GetGraphics().drawImage(spriteSheetNegra, 20,20);
+        juego.GetGraphics().clear(0xFF000000);
+        //juego.GetGraphics().drawImage(spriteSheetNegra, posPruebaX,posPruebaY);
+
+        int acumX = 0, acumY = 0;
+        int t = 16;
+        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 12, 15,100, posPruebaX, posFinalY);
     }
  /*
         @Override
