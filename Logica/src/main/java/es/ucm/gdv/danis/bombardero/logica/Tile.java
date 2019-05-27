@@ -1,4 +1,5 @@
 package es.ucm.gdv.danis.bombardero.logica;
+import es.ucm.gdv.danis.bombardero.fachada.Image;
 
 public class Tile {
 
@@ -10,15 +11,19 @@ public class Tile {
     //TODO: construir el sprite a partir del interpretacolor, y las posiciones generadas en interpretatipo
     }
 
-    private void interpretaColor(Logica.Colores color){
+    private Image interpretaColor(Logica.Colores color){
 
         //TODO: cargar aqui las imagenes que va a usar
+        Image img = null;
         switch (color){
             case rojo:
+                //spriteSheetNegra = juego.GetGraphics().newImage("ASCII_03.png"); //TODO: quitar esto de aqui, ahora está en Tile
                 break;
             case negro:
                 break;
         }
+
+        return img;
     }
 
     private void interpretaTipo(Logica.info info){

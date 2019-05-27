@@ -15,14 +15,15 @@ public class Sprite {
     private int tamImg;                 //Tam de la imagen en el spritesheet(Son cuadrados)
 
 
-    public Sprite(Image img, int x, int y){
+    public Sprite(Image img, int x, int y, int tam){
 
         _imagenSprite = img;
         posImgX = x;
         posImgY = y;
+        tamImg = tam;
     }
 
-    public void drawSprite(Graphics g, int posDestX, int posDestY, int tamImg){
-        g.drawImageFromSpritesheet(_imagenSprite, posImgX, posImgY, tamImg, posDestX, posDestY);
+    public void drawSprite(Graphics g, int posDestX, int posDestY, int tamDestImg){
+        g.drawImageFromSpritesheet(_imagenSprite, posImgX, posImgY, tamDestImg, posDestX, posDestY);
     }
 }

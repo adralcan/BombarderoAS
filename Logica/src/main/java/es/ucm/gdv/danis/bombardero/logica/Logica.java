@@ -54,9 +54,7 @@ public class Logica implements GameState {
     //Start
     public Logica(Game juego, int d){
         this.juego = juego;
-        System.out.println("AAAAAAAA - VOY A CARGAR IMAGEN");
         spriteSheetNegra = juego.GetGraphics().newImage("ASCII_03.png"); //TODO: quitar esto de aqui, ahora está en Tile
-        System.out.println("AAAAAAA - IMAGEN CARGADA!!");
         init(d);
     }
 
