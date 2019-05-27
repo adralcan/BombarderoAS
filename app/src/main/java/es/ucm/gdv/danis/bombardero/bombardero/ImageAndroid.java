@@ -17,12 +17,12 @@ public class ImageAndroid implements Image {
 
     @Override
     public int getWidth() {
-        return 0;
+        return _imageBitmap.getWidth();
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return _imageBitmap.getHeight();
     }
 
 

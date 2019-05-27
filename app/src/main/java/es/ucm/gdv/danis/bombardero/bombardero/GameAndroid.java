@@ -1,7 +1,9 @@
 package es.ucm.gdv.danis.bombardero.bombardero;
 
 import android.content.res.AssetManager;
+import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import es.ucm.gdv.danis.bombardero.fachada.Game;
@@ -10,7 +12,7 @@ import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Input;
 
 //Esta clase es el equivalente a MyView
-public class GameAndroid implements Game, Runnable {
+public class GameAndroid extends SurfaceView implements Game, Runnable {
 
     private SurfaceView _surfaceView;
 
@@ -26,6 +28,7 @@ public class GameAndroid implements Game, Runnable {
     double elapsedTime;
 
     public  GameAndroid(AppCompatActivity context){
+        super(context);
 
         _surfaceView = new SurfaceView(context);
         context.setContentView(_surfaceView);
@@ -54,6 +57,7 @@ public class GameAndroid implements Game, Runnable {
     public void run() {
         int i = 0;
 
+        SurfaceHolder sh = getHolder();
         while (_running) {
             //Input->Logica->Pintado
 
@@ -69,9 +73,12 @@ public class GameAndroid implements Game, Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }*/
-
+            while (!sh.getSurface().isValid()) {
+            }
+            Canvas c = sh.lockCanvas();
+            _androidGraphics.startFrame(c);
             _estadoJuego.render();
-            _androidGraphics.present();
+            sh.unlockCanvasAndPost(c);
 
 
         }

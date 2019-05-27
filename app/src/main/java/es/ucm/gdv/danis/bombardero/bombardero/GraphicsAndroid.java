@@ -11,8 +11,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ImageDecoder;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,20 +24,11 @@ public class GraphicsAndroid implements Graphics {
     private SurfaceView _surfaceView;       //Ventana para android
     private AssetManager _assetManager;     //Carga de imagenes
     private Canvas _canvas;                 //Viewport. Aquí se pinta.
-    private SurfaceHolder _surfaceHolder;
 
 
     GraphicsAndroid(SurfaceView surfaceView, AssetManager assetManager) {
         _surfaceView = surfaceView;
         _assetManager = assetManager;
-        _surfaceHolder = _surfaceView.getHolder();
-        _canvas = _surfaceView.getHolder().lockCanvas();
-
-
-    }
-
-    public void startFrame(Canvas c) {
-        _canvas = c;
     }
 
     @Override
@@ -62,11 +55,12 @@ public class GraphicsAndroid implements Graphics {
         return imageAndroid;
     }
 
+    public void startFrame(Canvas c){
+        _canvas = c;
+    }
+
     @Override
     public void clear(int color) {
-        while (!_surfaceHolder.getSurface().isValid()) {
-        }
-        _canvas = _surfaceView.getHolder().lockCanvas();
         _canvas.drawColor(color);
     }
 
@@ -81,7 +75,7 @@ public class GraphicsAndroid implements Graphics {
     }
 
     @Override
-    public void drawImageFromSpritesheet(Image image, int coordX, int coordY, int tam, int destX, int destY) {
+    public void drawImageFromSpritesheet(Image image, int coordX, int coordY, int tamTileX, int tamTileY, int destX, int destY) {
         if (image != null) {
             ImageAndroid moc = (ImageAndroid) image;
             Bitmap bm = moc.getBitmap();
@@ -92,24 +86,32 @@ public class GraphicsAndroid implements Graphics {
             //Primero el source que es el rectangulo que queremos usar y lueog el destino que es donde lo vamos a pintar
             Rect sourceRect = new Rect(coordX*16, coordY*16, coordX*16 + tamSprite, coordY*16 + tamSprite);
             Rect destinyRect = new Rect(
-                    destX, destY, destX + tam, destY + tam);
+                    destX, destY, destX + tamTileX, destY + tamTileY);
 
             _canvas.drawBitmap(bm, sourceRect, destinyRect, null);
         }
     }
 
     @Override
-    public int getWidth() {
-        return _surfaceView.getWidth();
+    public int getWidth()
+    {
+        int width = 0;
+        do {
+            width = _surfaceView.getWidth();
+        }
+        while (width == 0);
+
+        return  width;
     }
 
     @Override
     public int getHeight() {
-        return _surfaceView.getHeight();
-    }
+        int height = 0;
+        do {
+            height = _surfaceView.getHeight();
+        }
+        while (height == 0);
 
-
-    public void present() {
-        _surfaceHolder.unlockCanvasAndPost(_canvas);
+        return  height;
     }
 }

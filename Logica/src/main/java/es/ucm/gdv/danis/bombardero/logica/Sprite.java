@@ -23,7 +23,7 @@ public class Sprite {
         tamImg = tam;
     }
 
-    public void drawSprite(Graphics g, int posDestX, int posDestY, int tamDestImg){
-        g.drawImageFromSpritesheet(_imagenSprite, posImgX, posImgY, tamDestImg, posDestX, posDestY);
+    public void drawSprite(Graphics g, int posDestX, int posDestY, int tamTileX, int tamTileY){
+        g.drawImageFromSpritesheet(_imagenSprite, posImgX, posImgY, tamTileX, tamTileY, posDestX, posDestY);
     }
 }

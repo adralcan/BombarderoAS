@@ -23,15 +23,23 @@ public class Logica implements GameState {
 
     //TABLERO
     private int _dificultad;
+
     public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion};
-    public enum Colores { Negro, azul, rojo }
+    public enum Colores { negro, verde, rojo, morado, verdeOscuro, naranja, azulOscuro,
+                            amarillo, rosa, blanco, aguamarina, azulClaro, caqui, naranjaClaro, azul, verdeClaro}
 
     private Game juego = null;
+
+    //<ESTADOS>
+    private BombarderoGameState _BombarderoGameState;
 
     //Pruebas
     private int posPruebaX = 20;
     private int posPruebaY = 20;
     private Sprite pruebaSprite;
+    private Tile pruebaTile;
+    private Tile pruebaTile2;
+    private Tile pruebaTile3;
 
     private ResourceManager _resourceManager;
 
@@ -39,18 +47,18 @@ public class Logica implements GameState {
     public Logica(Game juego, int d){
         this.juego = juego;
         _resourceManager = new ResourceManager(juego.GetGraphics());
+        _BombarderoGameState = new BombarderoGameState(_resourceManager, juego.GetGraphics());
+
         init(d);
     }
 
     void init(int d){
         _dificultad = d;
         _frameRate = (float) (d + 1) / 30f;
+
         //tablero = new info[Ancho_Tablero][Alto_Tablero];
         //fillTablero();
-
-        pruebaSprite = _resourceManager.GetSpriteAPartirDeAscii(Colores.rojo, 65);
     }
-
 
 
 
@@ -59,6 +67,7 @@ public class Logica implements GameState {
     public void tick(double elapsedTime){
         //tickBomba();
         //tickAvion();
+        _BombarderoGameState.tick(elapsedTime);
         tickPrueba(elapsedTime);
     }
 
@@ -79,14 +88,8 @@ public class Logica implements GameState {
 
     @Override
     public void render() {
-        //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 20, 20, 200,1,15);
         juego.GetGraphics().clear(0xFF000000);
-        //juego.GetGraphics().drawImage(spriteSheetNegra, posPruebaX,posPruebaY);
-
-        int acumX = 0, acumY = 0;
-        int t = 16;
-        pruebaSprite.drawSprite(juego.GetGraphics(), 20, 20, 100);
-        //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, 12, 15,100, posPruebaX, posPruebaY);
+        _BombarderoGameState.render();
     }
 
     void CreaMatrixPrueba(){

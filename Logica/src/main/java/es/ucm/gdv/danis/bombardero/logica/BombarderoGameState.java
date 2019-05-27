@@ -5,6 +5,7 @@ import java.util.Random;
 
 import es.ucm.gdv.danis.bombardero.fachada.Game;
 import es.ucm.gdv.danis.bombardero.fachada.GameState;
+import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Image;
 import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
 
@@ -22,37 +23,64 @@ public class BombarderoGameState implements GameState {
 
     //ATRIBUTOS
     private Game juego = null;
+    private ResourceManager _resourceManager = null;
+
     private Image spriteSheetNegra, javaTest=null;
 
-    private Logica.info[][] tablero;
+    //< TABLERO >
+    private Tile [][] tablero;
 
     private static final int Ancho_Tablero = 20;
     private static final int Alto_Tablero = 25;
     private static final int numeroEdificios = 11;
 
+    private static int _TileSizeX, _TileSizeY;
+    private static int _OffsetX, _OffsetY;
+
+    private Graphics _graphics;
+
     private boolean gameOver = false;
 
+    public BombarderoGameState (ResourceManager res, Graphics graphics){
+        _resourceManager = res;
+        _graphics = graphics;
+        tablero = new Tile[Ancho_Tablero][Alto_Tablero];
 
-    void fillTablero(){
+        System.out.println("AAAA -" + _graphics);
+
+        _TileSizeX = _graphics.getWidth()/ (Ancho_Tablero);
+        _TileSizeY = _graphics.getHeight()/ (Alto_Tablero);
+
+        _OffsetX =  _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero))/ 2;
+        _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero))/ 2;
+        initEdificios();
+    }
+
+
+    void initEdificios(){
+        Tile edifTemp;
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
-                tablero[i][j] = Logica.info.nada;
+
+                if (i>4 && i < 16) {
+                    edifTemp = new Tile(_resourceManager, i, j, 75, Logica.Colores.azulClaro, Logica.info.edificio);
+                }
+                else {
+                     edifTemp = new Tile(_resourceManager, i, j, 75, Logica.Colores.azulClaro, Logica.info.nada);
+                }
+                tablero[i][j] = edifTemp;
             }
         }
 
-        //TODO: Los init ahora se inician en plan usando Tile
-        //Inicia los edificios
-        //initEdificios(tablero);
 
-        //Crea el avión y define la posición final
-        //initAvion(tablero);
+
 
     }
 
-    void initEdificios(Logica.info[][] _tablero){
+  /*  void initEdificios(Logica.info[][] _tablero){
         //Primero calculamos la altura base (5-d) y le añadimos un valor aleatorio 0-7
         //Y al edificio le añades el tejado si su altura es mayor a 0
-        int alturaMinima = (5 /*-dificultad*/);
+        int alturaMinima = (5 /*-dificultad);
         int posYedfif = 5;
 
         //FOR
@@ -81,7 +109,7 @@ public class BombarderoGameState implements GameState {
             //Siguiente edificio
             posYedfif++;
         }
-    }
+    }*/
 
 
 
@@ -107,6 +135,11 @@ public class BombarderoGameState implements GameState {
     @Override
     public void render() {
 
+        for (int i = 0; i < Ancho_Tablero ; i++) {
+            for (int j = 0; j < Alto_Tablero ; j++) {
+                tablero[i][j].drawTile(juego.GetGraphics(),_TileSizeX, _TileSizeY);
+            }
+        }
     }
 
 

@@ -29,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main); //TODO: ¿es necesario?
+
         //crear el motor
         _juegoAndroid = new GameAndroid(this);
+
         //Llamar a logica
         Logica logica = new Logica(_juegoAndroid,3);
 
