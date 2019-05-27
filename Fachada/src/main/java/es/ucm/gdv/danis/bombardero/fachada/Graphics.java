@@ -1,5 +1,7 @@
 package es.ucm.gdv.danis.bombardero.fachada;
 
+
+
 public interface Graphics {
 
     Image newImage(String name);                //Carga una imagen

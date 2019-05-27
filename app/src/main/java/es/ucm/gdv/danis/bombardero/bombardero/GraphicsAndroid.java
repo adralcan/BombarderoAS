@@ -3,6 +3,7 @@ package es.ucm.gdv.danis.bombardero.bombardero;
 
 import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Image;
+
 //Imports de android
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -23,11 +24,13 @@ public class GraphicsAndroid implements Graphics {
     private Canvas _canvas;                 //Viewport. Aquí se pinta.
     private SurfaceHolder _surfaceHolder;
 
+
     GraphicsAndroid(SurfaceView surfaceView, AssetManager assetManager) {
         _surfaceView = surfaceView;
         _assetManager = assetManager;
         _surfaceHolder = _surfaceView.getHolder();
         _canvas = _surfaceView.getHolder().lockCanvas();
+
 
     }
 
