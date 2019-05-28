@@ -106,7 +106,9 @@ public class BombarderoGameState implements GameState {
 
     @Override
     public void tick(double elapsedTime) {
-        tickAvion(elapsedTime);
+        if (!gameOver) {
+            tickAvion(elapsedTime);
+        }
     }
 
     //Mueve el avión e interpreta colisiones, de haberlas
@@ -133,7 +135,16 @@ public class BombarderoGameState implements GameState {
             tablero[xAvion-1][yAvion].setTile(Logica.Colores.rojo, Logica.info.avionCola);
         }
 
-        else{
+        else {
+            if (tablero[xAvion + 1][yAvion].get_infoTile() == Logica.info.tejado || tablero[xAvion + 1][yAvion].get_infoTile() == Logica.info.edificio) {
+                tablero[xAvion][yAvion].setTile(Logica.Colores.azulClaro, Logica.info.nada);
+                tablero[xAvion-1][yAvion].setTile(Logica.Colores.azulClaro, Logica.info.nada);
+                xAvion++;
+                tablero[xAvion][yAvion].setTile(Logica.Colores.rojo, Logica.info.explosion);
+                tablero[xAvion - 1][yAvion].setTile(Logica.Colores.rojo, Logica.info.nada);
+                //Cambio de estado
+                gameOver = true;
+            }
 
         }
     }
