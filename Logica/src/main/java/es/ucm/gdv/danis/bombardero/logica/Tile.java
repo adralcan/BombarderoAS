@@ -12,14 +12,15 @@ public class Tile {
 
     private int _PosMatrizX, _PosMatrizY;
     private int _DestPosX, _DestPosY;
-    private int  _TamDest;
+    private int  _TamDestX, _TamDestY;
 
-    public Tile(ResourceManager res, int x, int y, int tamDest, Logica.Colores color, Logica.info info){
+    public Tile(ResourceManager res, int x, int y, int tamDestX, int tamDestY,  Logica.Colores color, Logica.info info){
 
         //Multipicamos por 16 para el pintado logico de matriz a pantalla
-        _PosMatrizX = (x * 60) - 100;
-        _PosMatrizY = y * 60;
-        _TamDest = tamDest;
+        _PosMatrizX = x;
+        _PosMatrizY = y;
+        _TamDestX = tamDestX;
+        _TamDestY = tamDestY;
 
         _resourceManager = res;
         _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color,  interpretaTipo(info));

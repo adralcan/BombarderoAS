@@ -43,11 +43,6 @@ public class GamePC implements Game, Runnable   {
     }
 
     @Override
-    public void setCurrentGameState(GameState curr){
-        currentGameState = curr;
-    }
-
-    @Override
     public Graphics GetGraphics() {
         return _graphicsPC;
     }
@@ -56,6 +51,10 @@ public class GamePC implements Game, Runnable   {
     public Input GetInput() {
         //Esto va regular, seguramente por dependencias
         return _inputPC;
+    }
+
+    public void SetLogicaPc(){
+        //TODO: HACER ESTA PARTE
     }
 
     @Override

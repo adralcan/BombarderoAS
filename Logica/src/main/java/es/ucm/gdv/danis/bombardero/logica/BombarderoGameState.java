@@ -8,6 +8,7 @@ import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Image;
 import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
+import sun.rmi.runtime.Log;
 
 public class BombarderoGameState implements GameState {
 
@@ -22,7 +23,6 @@ public class BombarderoGameState implements GameState {
     private int yBomba = 0;
 
     //ATRIBUTOS
-    private Game juego = null;
     private ResourceManager _resourceManager = null;
 
     private Image spriteSheetNegra, javaTest=null;
@@ -48,25 +48,28 @@ public class BombarderoGameState implements GameState {
 
         System.out.println("AAAA -" + _graphics);
 
-        _TileSizeX = _graphics.getWidth()/ (Ancho_Tablero);
-        _TileSizeY = _graphics.getHeight()/ (Alto_Tablero);
 
-        _OffsetX =  _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero))/ 2;
-        _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero))/ 2;
         initEdificios();
     }
 
 
     void initEdificios(){
+
+        _TileSizeX = _graphics.getWidth() / (Ancho_Tablero);
+        _TileSizeY = _graphics.getHeight()/ (Alto_Tablero);
+
+        _OffsetX =  _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero))/ 2;
+        _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero))/ 2;
+
         Tile edifTemp;
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
 
                 if (i>4 && i < 16) {
-                    edifTemp = new Tile(_resourceManager, i, j, 75, Logica.Colores.azulClaro, Logica.info.edificio);
+                    edifTemp = new Tile(_resourceManager, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.edificio);
                 }
                 else {
-                     edifTemp = new Tile(_resourceManager, i, j, 75, Logica.Colores.azulClaro, Logica.info.nada);
+                     edifTemp = new Tile(_resourceManager, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
                 }
                 tablero[i][j] = edifTemp;
             }
@@ -137,7 +140,7 @@ public class BombarderoGameState implements GameState {
 
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
-                tablero[i][j].drawTile(juego.GetGraphics(),_TileSizeX, _TileSizeY);
+                tablero[i][j].drawTile(_graphics, 65, 65);
             }
         }
     }

@@ -9,12 +9,9 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.ImageDecoder;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,23 +92,13 @@ public class GraphicsAndroid implements Graphics {
     @Override
     public int getWidth()
     {
-        int width = 0;
-        do {
-            width = _surfaceView.getWidth();
-        }
-        while (width == 0);
-
-        return  width;
+        return _surfaceView.getWidth();
     }
 
     @Override
     public int getHeight() {
-        int height = 0;
-        do {
-            height = _surfaceView.getHeight();
-        }
-        while (height == 0);
 
-        return  height;
+        return _surfaceView.getHeight();
     }
+
 }

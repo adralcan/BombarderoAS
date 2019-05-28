@@ -8,10 +8,7 @@ import java.util.Random;
 
 import es.ucm.gdv.danis.bombardero.fachada.Game;
 import es.ucm.gdv.danis.bombardero.fachada.GameState;
-import es.ucm.gdv.danis.bombardero.fachada.Image;
-import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
-
-
+import sun.java2d.Surface;
 
 
 public class Logica implements GameState {
@@ -20,6 +17,8 @@ public class Logica implements GameState {
     private float _lastFrame = 0;       //ultimo frame para el tiempo
     private float _frameRate;           //frames por segundo
     private float _time = 0;             //Contador de tiempo
+
+
 
     //TABLERO
     private int _dificultad;
@@ -38,36 +37,37 @@ public class Logica implements GameState {
     private int posPruebaY = 20;
     private Sprite pruebaSprite;
     private Tile pruebaTile;
-    private Tile pruebaTile2;
-    private Tile pruebaTile3;
 
     private ResourceManager _resourceManager;
 
     //Start
-    public Logica(Game juego, int d){
+    public Logica(Game juego){
         this.juego = juego;
+
         _resourceManager = new ResourceManager(juego.GetGraphics());
+        //<Creamos los estados de juego>
+
         _BombarderoGameState = new BombarderoGameState(_resourceManager, juego.GetGraphics());
 
-        init(d);
+
+        //TODO: calcular dificultad
+        init();
     }
 
-    void init(int d){
-        _dificultad = d;
-        _frameRate = (float) (d + 1) / 30f;
+    void init(){
+        _dificultad = 3;
+        _frameRate = (float) (3 + 1) / 30f;
 
         //tablero = new info[Ancho_Tablero][Alto_Tablero];
         //fillTablero();
     }
-
-
 
     //Update
     @Override
     public void tick(double elapsedTime){
         //tickBomba();
         //tickAvion();
-        _BombarderoGameState.tick(elapsedTime);
+//        _BombarderoGameState.tick(elapsedTime);
         tickPrueba(elapsedTime);
     }
 
@@ -84,10 +84,9 @@ public class Logica implements GameState {
     }
 
 
-
-
     @Override
     public void render() {
+
         juego.GetGraphics().clear(0xFF000000);
         _BombarderoGameState.render();
     }

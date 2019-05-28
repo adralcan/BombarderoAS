@@ -1,6 +1,8 @@
 package es.ucm.gdv.danis.bombardero.fachada;
 
 
+import javax.xml.ws.handler.LogicalHandler;
+
 //?Es public class o es INTERFACE?
 public interface Game {
 
@@ -10,5 +12,4 @@ public interface Game {
     //Contiene la instancia de Input
      Input GetInput();
 
-     void setCurrentGameState(GameState c);
 }

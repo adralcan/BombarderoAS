@@ -17,5 +17,4 @@ public interface Graphics {
     int getWidth();                             //Ancho
     int getHeight();                            //Alto
 
-
 }
