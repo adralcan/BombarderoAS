@@ -7,6 +7,7 @@ public class Tile {
     private ResourceManager _resourceManager;
 
     private Logica.Colores _colorImg; //Seguramente no haga falta
+
     private Logica.info _infoTile;
     private Sprite _TileSprite;
 
@@ -22,12 +23,17 @@ public class Tile {
         _TamDestX = tamDestX;
         _TamDestY = tamDestY;
 
+        _infoTile = info;
+
         _resourceManager = res;
         _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color,  interpretaTipo(info));
 
     }
 
-
+    public void setTile(Logica.Colores color, Logica.info info){
+        _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color,  interpretaTipo(info));
+        _infoTile = info;
+    }
 
     private int interpretaTipo(Logica.info info){
 
@@ -61,9 +67,9 @@ public class Tile {
         return indice;
     }
 
-    public void drawTile(Graphics graphics, int tamTileX, int tamTileY){
+    public void drawTile(Graphics graphics){
 
-        _TileSprite.drawSprite(graphics, _PosMatrizX , _PosMatrizY, tamTileX, tamTileY);
+        _TileSprite.drawSprite(graphics, _PosMatrizX , _PosMatrizY, _TamDestX, _TamDestY);
     }
 
 
@@ -81,6 +87,10 @@ public class Tile {
 
     public int get_DestPosY() {
         return _DestPosY;
+    }
+
+    public Logica.info get_infoTile() {
+        return _infoTile;
     }
 
 }

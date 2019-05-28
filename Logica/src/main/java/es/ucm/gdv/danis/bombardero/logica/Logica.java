@@ -67,8 +67,8 @@ public class Logica implements GameState {
     public void tick(double elapsedTime){
         //tickBomba();
         //tickAvion();
-//        _BombarderoGameState.tick(elapsedTime);
-        tickPrueba(elapsedTime);
+         _BombarderoGameState.tick(elapsedTime);
+       // tickPrueba(elapsedTime);
     }
 
     void tickPrueba(double elapsedTime) {

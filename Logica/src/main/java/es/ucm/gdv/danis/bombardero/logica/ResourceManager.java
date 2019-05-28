@@ -42,9 +42,10 @@ public class ResourceManager {
 
             CargaSprites(spriteSheet);
         }
+        System.out.println("AAAAAA- TODO TERMINADO Y CARGADO");
     }
 
-    //Crea una matriz de sprites por cada una de las imagenes
+    //Crea una matriz de sprites por la imagen pasada como parametro
     private void CargaSprites(Image img) {
         ArrayList<Sprite> SpritesAux = new ArrayList<>();
 
@@ -55,17 +56,15 @@ public class ResourceManager {
                 //System.out.println("AAAAAA- IMAGEN CARGADA NUMERO " + (i+j))
             }
         }
-
+        //Añadimos 1 de las 16 imagenes ascii
         gameSprites.add(SpritesAux);
-        System.out.println("AAAAAA- TODO TERMINADO Y CARGADO");
-
     }
 
-    public Sprite GetSpriteAPartirDeAscii(Logica.Colores c, int x){ //TODO: cambiar x e y a un int de numero
+    public Sprite GetSpriteAPartirDeAscii(Logica.Colores c, int x){
         int color = c.ordinal();
 
-        Sprite aaa = gameSprites.get(color).get(x);
+        Sprite aux = gameSprites.get(color).get(x);
 
-        return aaa;
+        return aux;
     }
 }

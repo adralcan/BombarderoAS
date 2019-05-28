@@ -3,7 +3,6 @@ package es.ucm.gdv.danis.bombardero.bombardero;
 
 // IMPORTS
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,29 +14,19 @@ import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Input;
 import es.ucm.gdv.danis.bombardero.logica.Logica;
 
-// --
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 // Punto de entrada para Android //
 public class MainActivity extends AppCompatActivity {
-
-    //GameAndroid _juegoAndroid;
 
     private MyView _renderView;
     private GraphicsAndroid _androidGraphics;
     private InputAndroid    _androidInput;
     private Logica _logicaJuego;
     boolean IniciaLogica;
-
 
     /*
     * Lo primero a lo que llamamos.
@@ -81,10 +70,8 @@ public class MainActivity extends AppCompatActivity {
     class MyView extends SurfaceView implements Runnable, Game {
 
         public MyView(Context context) {
-
             super(context);
         }
-
 
         public void Pause(){
             _running = false;

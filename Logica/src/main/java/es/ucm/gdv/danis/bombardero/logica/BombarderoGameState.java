@@ -12,8 +12,8 @@ import sun.rmi.runtime.Log;
 
 public class BombarderoGameState implements GameState {
 
-    private int xAvion = 0;
-    private int yAvionMorro = 0; int yAvionCola = 0;
+    private int xAvion = 3;
+    private int yAvion = 2;
     private double xIncr = 1, yIncr = 1;
 
     private int posFinalX = 18, posFinalY = 22;
@@ -47,31 +47,43 @@ public class BombarderoGameState implements GameState {
         tablero = new Tile[Ancho_Tablero][Alto_Tablero];
 
         System.out.println("AAAA -" + _graphics);
-
-
         initEdificios();
+        initAvion(xAvion,yAvion);
     }
 
 
     void initEdificios(){
 
         _TileSizeX = _graphics.getWidth() / (Ancho_Tablero);
-        _TileSizeY = _graphics.getHeight()/ (Alto_Tablero);
+        _TileSizeY = _graphics.getHeight()/ (Alto_Tablero+2);
 
         _OffsetX =  _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero))/ 2;
-        _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero))/ 2;
+        _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero+10))/ 2;
 
-        Tile edifTemp;
+        Tile edifTemp = null;
+        int dificultad = 2; //Provisional hasta que nos la pase el gamestate de seleccionar dificultad
+        Random rnd = new Random(); //Para generar alturas aleatorias
+
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
-
-                if (i>4 && i < 16) {
-                    edifTemp = new Tile(_resourceManager, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.edificio);
-                }
-                else {
-                     edifTemp = new Tile(_resourceManager, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
-                }
+                edifTemp = new Tile(_resourceManager, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
                 tablero[i][j] = edifTemp;
+            }
+        }
+
+        //Crear los edificios
+        for (int i = 0; i < Ancho_Tablero ; i++) {
+            //Respetamos margen
+            if (i>4 && i < 16) {
+                int alturaExtra = rnd.nextInt(7);
+                int alturaTotal = (5 - dificultad)  + alturaExtra;
+
+                if (alturaTotal > 0 ) {
+                    for(int j = 22; j > 22 - alturaTotal; j--){
+                        tablero[i][j].setTile(Logica.Colores.azulClaro, Logica.info.edificio);
+                    }
+                }
+                tablero[i][22 - alturaTotal].setTile(Logica.Colores.azulClaro, Logica.info.tejado);
             }
         }
 
@@ -80,51 +92,13 @@ public class BombarderoGameState implements GameState {
 
     }
 
-  /*  void initEdificios(Logica.info[][] _tablero){
-        //Primero calculamos la altura base (5-d) y le añadimos un valor aleatorio 0-7
-        //Y al edificio le añades el tejado si su altura es mayor a 0
-        int alturaMinima = (5 /*-dificultad);
-        int posYedfif = 5;
+    void initAvion(int x, int y){
 
-        //FOR
-        for (int i = 0; i < numeroEdificios ; i++) {
-
-            java.util.Random Random = new Random();
-            int alturaExtra = Random.nextInt(7);
-            int alturaTotal = alturaMinima  + alturaExtra;
-
-            final int Base = 18;
-
-            if(alturaTotal > 0 ) {
-
-                int altEdif = 0;
-                for (int alt = 0; alt <= alturaTotal; alt++) {
-
-                    int newAltura = Base - alt; //Y tal
-                    _tablero[newAltura][posYedfif] = Logica.info.edificio;
-
-                    if(alt == alturaTotal){
-                        //tejado
-                        _tablero[newAltura-1][posYedfif] = Logica.info.tejado;
-                    }
-                }
-            }
-            //Siguiente edificio
-            posYedfif++;
-        }
-    }*/
-
-
-
-    void initAvion(Logica.info[][] _tablero){
-        xAvion = 2;
-        yAvionMorro = 3;
-        yAvionCola = 2;
 
         //Son dos tiles que siempre van juntos lmao
         //Pero las variables si que las vamos a mantener
-        _tablero[xAvion][yAvionCola] = Logica.info.avionCola;
-        _tablero[xAvion][yAvionMorro] = Logica.info.avionMorro;
+        tablero[x-1][y].setTile(Logica.Colores.rojo, Logica.info.avionCola);
+        tablero[x][y].setTile(Logica.Colores.rojo, Logica.info.avionMorro);
 
     }
 
@@ -132,7 +106,36 @@ public class BombarderoGameState implements GameState {
 
     @Override
     public void tick(double elapsedTime) {
+        tickAvion(elapsedTime);
+    }
 
+    //Mueve el avión e interpreta colisiones, de haberlas
+    //Movimiento horizontal y comprobacion
+    private void tickAvion(double elapsedTime){
+
+        //Comprobar colisiones con la casilla siguiente.
+       Tile Avion =  tablero[xAvion][yAvion];
+
+        if( tablero[xAvion+1][yAvion].get_infoTile() == Logica.info.nada){
+
+            tablero[xAvion][yAvion].setTile(Logica.Colores.azulClaro, Logica.info.nada);
+            tablero[xAvion-1][yAvion].setTile(Logica.Colores.azulClaro, Logica.info.nada);
+
+            //Si se sale por la derecha
+            if(xAvion+1 > Ancho_Tablero-2) {
+                xAvion = 3;
+                yAvion++;
+            }
+            else{
+                xAvion++;
+            }
+            tablero[xAvion][yAvion].setTile(Logica.Colores.rojo, Logica.info.avionMorro);
+            tablero[xAvion-1][yAvion].setTile(Logica.Colores.rojo, Logica.info.avionCola);
+        }
+
+        else{
+
+        }
     }
 
     @Override
@@ -140,7 +143,7 @@ public class BombarderoGameState implements GameState {
 
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
-                tablero[i][j].drawTile(_graphics, 65, 65);
+                tablero[i][j].drawTile(_graphics);
             }
         }
     }
