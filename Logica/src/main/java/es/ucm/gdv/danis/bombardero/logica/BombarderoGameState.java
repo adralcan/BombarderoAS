@@ -1,5 +1,6 @@
 package es.ucm.gdv.danis.bombardero.logica;
 
+import java.sql.Struct;
 import java.util.List;
 import java.util.Random;
 
@@ -8,24 +9,53 @@ import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Image;
 import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
-import sun.rmi.runtime.Log;
 
+//TODO: ORGANIZAR LAS VARIABLES
 public class BombarderoGameState implements GameState {
 
+    //ESTADOS BOMBARDERO GAME STATE
+    enum Estados{ CINEMATICA, JUEGO, WIN, LOSE}
+
+    Estados estadoActual;
+
+    private float _velocidadActual;
+    private final float velocidadCinematica = 5.0f;
+    private final float velocidadJuego = 30.0f;
+
+    //Atributos Avión
     private int xAvion = 3;
     private int yAvion = 2;
     private double xIncr = 1, yIncr = 1;
 
     private int posFinalX = 18, posFinalY = 22;
+
     //BOMBA
     public int numBombas = 0;
     private int xBomba = 0;
     private int yBomba = 0;
 
     //ATRIBUTOS
+    private class Edificio{
+        Edificio(int a, int c){
+            _alturaEdificio = a;  _color = c;
+        }
+        public int _alturaEdificio;
+        public int _color;
+    }
+
+    private Edificio [] edificios;
     private ResourceManager _resourceManager = null;
 
+    private final int NumEdificios = 11;
     private Image spriteSheetNegra, javaTest=null;
+
+    //atributos cinematica
+    private int dificultad;
+    private int i = 0;
+    private int j = 22;
+    private Random rnd;
+
+    //
 
     //< TABLERO >
     private Tile [][] tablero;
@@ -45,24 +75,32 @@ public class BombarderoGameState implements GameState {
         _resourceManager = res;
         _graphics = graphics;
         tablero = new Tile[Ancho_Tablero][Alto_Tablero];
+        estadoActual = Estados.CINEMATICA;
+        _velocidadActual = velocidadCinematica;
 
         System.out.println("AAAA -" + _graphics);
-        initEdificios();
+        edificios = new Edificio[NumEdificios];
+        initCuidad();
+
+    }
+
+    //Init de todos los elementos de la ciudad
+    private void initCuidad(){
+        initMatriz();
+        initAlturaEdificios();
         initAvion(xAvion,yAvion);
     }
 
-
-    void initEdificios(){
-
+    void initMatriz(){
         _TileSizeX = _graphics.getWidth() / (Ancho_Tablero);
         _TileSizeY = _graphics.getHeight()/ (Alto_Tablero+2);
 
         _OffsetX =  _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero))/ 2;
         _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero+10))/ 2;
 
+        dificultad = 2; //Provisional hasta que nos la pase el gamestate de seleccionar dificultad
         Tile edifTemp = null;
-        int dificultad = 2; //Provisional hasta que nos la pase el gamestate de seleccionar dificultad
-        Random rnd = new Random(); //Para generar alturas aleatorias
+        rnd = new Random(); //Para generar alturas aleatorias
 
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
@@ -70,27 +108,29 @@ public class BombarderoGameState implements GameState {
                 tablero[i][j] = edifTemp;
             }
         }
-
-        //Crear los edificios
-        for (int i = 0; i < Ancho_Tablero ; i++) {
-            //Respetamos margen
-            if (i>4 && i < 16) {
-                int alturaExtra = rnd.nextInt(7);
-                int alturaTotal = (5 - dificultad)  + alturaExtra;
-
-                if (alturaTotal > 0 ) {
-                    for(int j = 22; j > 22 - alturaTotal; j--){
-                        tablero[i][j].setTile(Logica.Colores.azulClaro, Logica.info.edificio);
-                    }
-                }
-                tablero[i][22 - alturaTotal].setTile(Logica.Colores.azulClaro, Logica.info.tejado);
-            }
-        }
-
-
-
-
     }
+
+    void initAlturaEdificios(){
+        for(int j = 0; j < numeroEdificios; j++ ){
+            int _alturaEdificio = (5 - dificultad)  + rnd.nextInt(7);
+            int _color = rnd.nextInt(16);
+            edificios[j] = new Edificio(_alturaEdificio, _color);
+        }
+    }
+
+
+    boolean initEdificio(int x, int y){
+
+            Logica.Colores color = Logica.Colores.values()[edificios[x]._color];
+            tablero[x+4][y].setTile(color, Logica.info.edificio);
+
+            if(y-1 ==  22 - edificios[x]._alturaEdificio) {
+                tablero[x+4][y - 1].setTile(color, Logica.info.tejado);
+                return true;
+            }
+            else return false;
+    }
+
 
     void initAvion(int x, int y){
 
@@ -106,8 +146,34 @@ public class BombarderoGameState implements GameState {
 
     @Override
     public void tick(double elapsedTime) {
-        if (!gameOver) {
-            tickAvion(elapsedTime);
+
+        switch (estadoActual){
+
+            case CINEMATICA:
+                //Construye edificio
+                if (i < numeroEdificios) {
+                    if(edificios[i]._alturaEdificio > 0  && !initEdificio(i,j)  ) {
+                        //Si no ha terminado, resto para subir la altura
+                        j--;
+                    }
+                    else {
+                        i++;
+                        j = 22;
+                    }
+
+                }
+                else estadoActual = Estados.JUEGO;
+
+                break;
+            case JUEGO:
+                if (!gameOver) {
+                    tickAvion(elapsedTime);
+                }
+                break;
+            case WIN:
+                break;
+            case LOSE:
+                break;
         }
     }
 
@@ -157,6 +223,11 @@ public class BombarderoGameState implements GameState {
                 tablero[i][j].drawTile(_graphics);
             }
         }
+    }
+
+    @Override
+    public float getVelocity() {
+        return _velocidadActual;
     }
 
 

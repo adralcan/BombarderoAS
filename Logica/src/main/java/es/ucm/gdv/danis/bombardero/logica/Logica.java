@@ -20,7 +20,7 @@ public class Logica implements GameState {
 
 
 
-    //TABLERO
+    //UTILS
     private int _dificultad;
 
     public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion};
@@ -49,14 +49,13 @@ public class Logica implements GameState {
 
         _BombarderoGameState = new BombarderoGameState(_resourceManager, juego.GetGraphics());
 
-
         //TODO: calcular dificultad
         init();
     }
 
     void init(){
         _dificultad = 3;
-        _frameRate = (float) (3 + 1) / 30f;
+        _frameRate = (float) (3 + 1) / 30.0f; //TODO: poner el 30 en una variable
 
         //tablero = new info[Ancho_Tablero][Alto_Tablero];
         //fillTablero();
@@ -65,10 +64,15 @@ public class Logica implements GameState {
     //Update
     @Override
     public void tick(double elapsedTime){
-        //tickBomba();
-        //tickAvion();
-         _BombarderoGameState.tick(elapsedTime);
-       // tickPrueba(elapsedTime);
+
+        _time += elapsedTime;
+        if(_time > _lastFrame) {
+            _lastFrame = _time + _frameRate;
+            //tickBomba();
+            //tickAvion();
+            _BombarderoGameState.tick(elapsedTime);
+            // tickPrueba(elapsedTime);
+        }
     }
 
     void tickPrueba(double elapsedTime) {
@@ -89,6 +93,11 @@ public class Logica implements GameState {
 
         juego.GetGraphics().clear(0xFF000000);
         _BombarderoGameState.render();
+    }
+
+    @Override
+    public float getVelocity() {
+       return _BombarderoGameState.getVelocity(); //TODO: _actualEstate.getVelocity();
     }
 
     void CreaMatrixPrueba(){

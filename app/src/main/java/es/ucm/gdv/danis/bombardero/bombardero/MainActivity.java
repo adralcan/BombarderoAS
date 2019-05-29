@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
 
                 currentTime = System.nanoTime();
                 nanoElapsedTime = currentTime - lastFrameTime;
-                elapsedTime = (double) nanoElapsedTime / 1.0e9;
                 lastFrameTime = currentTime;
+                elapsedTime = (double) nanoElapsedTime / 1.0e9;
 
                 _logicaJuego.tick(elapsedTime);
 

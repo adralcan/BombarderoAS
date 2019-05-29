@@ -7,4 +7,6 @@ public interface GameState {
 
     public void render();
 
+    public float getVelocity();
+
 }
