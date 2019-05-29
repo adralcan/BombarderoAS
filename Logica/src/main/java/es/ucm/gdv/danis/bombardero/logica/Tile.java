@@ -11,16 +11,20 @@ public class Tile {
     private Logica.info _infoTile;
     private Sprite _TileSprite;
 
+    private int _coordX, _coordY;
     private int _PosMatrizX, _PosMatrizY;
     private int _DestPosX, _DestPosY;
     private int  _TamDestX, _TamDestY;
 
 
-    public Tile(ResourceManager res, int x, int y, int tamDestX, int tamDestY,  Logica.Colores color, Logica.info info){
+    public Tile(ResourceManager res,int x , int y, int coordX, int coordY, int tamDestX, int tamDestY,  Logica.Colores color, Logica.info info){
 
         //Multipicamos por 16 para el pintado logico de matriz a pantalla
+
         _PosMatrizX = x;
         _PosMatrizY = y;
+        _coordX = coordX;
+        _coordY = coordY;
         _TamDestX = tamDestX;
         _TamDestY = tamDestY;
 
@@ -35,6 +39,7 @@ public class Tile {
         _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color,  interpretaTipo(info));
         _infoTile = info;
     }
+
 
     private int interpretaTipo(Logica.info info){
 
@@ -59,8 +64,14 @@ public class Tile {
             case bomba:
                 indice = 252;
                 break;
-            case explosion:
+            case explosion1:
+                indice =  188;
+                break;
+            case explosion2:
                 indice =  238;
+                break;
+            case explosion3:
+                indice =  253;
                 break;
             case character:
                 break;
@@ -72,7 +83,7 @@ public class Tile {
 
     public void drawTile(Graphics graphics){
 
-        _TileSprite.drawSprite(graphics, _PosMatrizX , _PosMatrizY, _TamDestX, _TamDestY);
+        _TileSprite.drawSprite(graphics, _coordX , _coordY, _TamDestX, _TamDestY);
     }
 
 

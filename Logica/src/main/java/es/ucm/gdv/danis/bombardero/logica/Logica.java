@@ -23,7 +23,7 @@ public class Logica implements GameState {
     //UTILS
     private int _dificultad;
 
-    public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion, character};
+    public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion1, explosion2, explosion3, character};
     public enum Colores { negro, verde, rojo, morado, verdeOscuro, naranja, azulOscuro,
                             amarillo, rosa, blanco, aguamarina, azulClaro, caqui, naranjaClaro, azul, verdeClaro}
 
@@ -55,7 +55,7 @@ public class Logica implements GameState {
 
     void init(){
         _dificultad = 3;
-        _frameRate = (float) (3 + 1) / 30.0f; //TODO: poner el 30 en una variable
+        _frameRate = (float) (3 + 1) / getVelocity();
 
         //tablero = new info[Ancho_Tablero][Alto_Tablero];
         //fillTablero();

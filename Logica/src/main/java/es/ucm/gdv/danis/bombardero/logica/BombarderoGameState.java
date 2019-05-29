@@ -1,6 +1,7 @@
 package es.ucm.gdv.danis.bombardero.logica;
 
 import java.sql.Struct;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,7 +20,7 @@ public class BombarderoGameState implements GameState {
     Estados estadoActual;
 
     private float _velocidadActual;
-    private final float velocidadCinematica = 5.0f;
+    private final float velocidadCinematica = 250.0f;
     private final float velocidadJuego = 30.0f;
 
     //Atributos Avión
@@ -33,6 +34,8 @@ public class BombarderoGameState implements GameState {
     public int numBombas = 0;
     private int xBomba = 0;
     private int yBomba = 0;
+
+    LinkedList<Tile> listaExplosiones;
 
     //ATRIBUTOS
     private class Edificio{
@@ -83,6 +86,7 @@ public class BombarderoGameState implements GameState {
 
 
         edificios = new Edificio[NumEdificios];
+        listaExplosiones = new LinkedList<>();
         initCuidad();
 
     }
@@ -107,7 +111,7 @@ public class BombarderoGameState implements GameState {
 
         for (int i = 0; i < Ancho_Tablero ; i++) {
             for (int j = 0; j < Alto_Tablero ; j++) {
-                edifTemp = new Tile(_resourceManager, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
+                edifTemp = new Tile(_resourceManager, i, j, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
                 tablero[i][j] = edifTemp;
             }
         }
@@ -168,13 +172,17 @@ public class BombarderoGameState implements GameState {
                     }
 
                 }
-                else estadoActual = Estados.JUEGO;
+                else{
+                    estadoActual = Estados.JUEGO;
+                    _velocidadActual = velocidadJuego;
+                }
 
                 break;
             case JUEGO:
                 if (!gameOver) {
-
                     tickAvion(elapsedTime);
+                    tickBomba(elapsedTime);
+                    tickExplosion();
                 }
                 break;
             case WIN:
@@ -213,8 +221,10 @@ public class BombarderoGameState implements GameState {
                 tablero[xAvion][yAvion].setTile(Logica.Colores.azulClaro, Logica.info.nada);
                 tablero[xAvion-1][yAvion].setTile(Logica.Colores.azulClaro, Logica.info.nada);
                 xAvion++;
-                tablero[xAvion][yAvion].setTile(Logica.Colores.rojo, Logica.info.explosion);
-                tablero[xAvion - 1][yAvion].setTile(Logica.Colores.rojo, Logica.info.nada);
+                tablero[xAvion][yAvion].setTile(Logica.Colores.rojo, Logica.info.explosion1);
+                Tile expl = tablero[xAvion][yAvion];
+                listaExplosiones.add(expl);
+                tablero[xAvion - 1][yAvion].setTile(Logica.Colores.rojo, Logica.info.nada); //borrar la cola
                 //Cambio de estado
                 gameOver = true;
             }
@@ -225,19 +235,67 @@ public class BombarderoGameState implements GameState {
     private void tickBomba(double elapsedTime)
     {
         List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
-        //Si no hay bomba, la generaremos
-        if (numBombas < 1)
-        {
-            /*for (TouchEvent t: touchEvents)
-            {
-                if (t.get_touchType() == TouchEvent.TouchType.TOUCH && t.get_ID() == TouchEvent.ButtonType.PRIMARY.ordinal()) {
-                    bomb = createTile(_gameManager.Sprites[GameManager.SpriteColor.LIGHT_GREEN.ordinal()][BOMB], planeRight.get_posX(), planeRight.get_posY() + 1);
-                    bombForce = _random.nextInt(RANDOM_BOMB_FORCE + 1) + MIN_BOMB_FORCE; // 2-4
+        for (TouchEvent touchEvent:touchEvents) {
+            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click && numBombas < 1){
+                numBombas++;
+                xBomba = xAvion; yBomba=yAvion+1;
+                tablero[xAvion][yAvion].setTile(Logica.Colores.rojo, Logica.info.bomba);
+            }
+        }
+
+        if(numBombas >= 1){
+            tablero[xBomba][yBomba].setTile(Logica.Colores.blanco, Logica.info.nada);
+            yBomba++;
+
+            //Comprobamos colisiones
+            if(tablero[xBomba][yBomba].get_infoTile() == Logica.info.tejado || tablero[xBomba][yBomba].get_infoTile() == Logica.info.edificio){
+                Random rnd = new Random();
+
+                int edificiosDestruidos = 3; /*rnd.nextInt(3)+1;*/
+                for(int i = 0; i < edificiosDestruidos; i++){
+                    tablero[xBomba][yBomba+(i-1)].setTile(Logica.Colores.rojo, Logica.info.nada);
+                  tablero[xBomba][yBomba+i].setTile(Logica.Colores.rojo, Logica.info.explosion1);
+
+                  if(i == edificiosDestruidos-1){
+                      Tile expl = tablero[xBomba][yBomba+edificiosDestruidos-1];
+                      listaExplosiones.add(expl);
+                  }
                 }
-            }*/
+                numBombas--;
+            }
+            else if (yBomba >= 22){
+                tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.explosion1);
+                Tile expl = tablero[xBomba][yBomba];
+                listaExplosiones.add(expl);
+                numBombas--;
+            }
+            else{
+                tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.bomba);
+            }
         }
 
 
+    }
+
+    private void tickExplosion(){
+        for (Tile expl: listaExplosiones) {
+
+            int posExplX = expl.get_PosMatrizX();
+            int posExplY = expl.get_PosMatrizY();
+
+            switch (expl.get_infoTile()){
+                case explosion1:
+                   tablero[posExplX][posExplY].setTile(Logica.Colores.rojo, Logica.info.explosion2);
+                    break;
+                case explosion2:
+                    tablero[posExplX][posExplY].setTile(Logica.Colores.rojo, Logica.info.explosion3);
+                    break;
+                case explosion3:
+                    tablero[posExplX][posExplY].setTile(Logica.Colores.rojo, Logica.info.nada);
+                    break;
+
+            }
+        }
     }
 
     @Override
