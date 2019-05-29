@@ -12,6 +12,7 @@ public interface Graphics {
     //The src parameters represent the area of the image to copy and draw.
     //The dst parameters display the area of the destination to cover by the the source
     void drawImageFromSpritesheet(Image image, int x, int y, int tamTileX, int tamTileY, int imgX, int imgY);
+    void drawText(Image image, String texto, int tamTileX, int tamTileY, int imgX, int imgY);
 
     //Getters de la ventana
     int getWidth();                             //Ancho

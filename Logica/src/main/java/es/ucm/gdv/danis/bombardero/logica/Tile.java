@@ -15,6 +15,7 @@ public class Tile {
     private int _DestPosX, _DestPosY;
     private int  _TamDestX, _TamDestY;
 
+
     public Tile(ResourceManager res, int x, int y, int tamDestX, int tamDestY,  Logica.Colores color, Logica.info info){
 
         //Multipicamos por 16 para el pintado logico de matriz a pantalla
@@ -60,6 +61,8 @@ public class Tile {
                 break;
             case explosion:
                 indice =  238;
+                break;
+            case character:
                 break;
 
         }

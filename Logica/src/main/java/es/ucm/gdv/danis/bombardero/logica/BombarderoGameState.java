@@ -67,18 +67,21 @@ public class BombarderoGameState implements GameState {
     private static int _TileSizeX, _TileSizeY;
     private static int _OffsetX, _OffsetY;
 
+    private Game _juego;
     private Graphics _graphics;
 
     private boolean gameOver = false;
 
-    public BombarderoGameState (ResourceManager res, Graphics graphics){
+    public BombarderoGameState (ResourceManager res, Game juego){
         _resourceManager = res;
-        _graphics = graphics;
+        _juego = juego;
+        _graphics = _juego.GetGraphics();
+
         tablero = new Tile[Ancho_Tablero][Alto_Tablero];
         estadoActual = Estados.CINEMATICA;
         _velocidadActual = velocidadCinematica;
 
-        System.out.println("AAAA -" + _graphics);
+
         edificios = new Edificio[NumEdificios];
         initCuidad();
 
@@ -113,7 +116,10 @@ public class BombarderoGameState implements GameState {
     void initAlturaEdificios(){
         for(int j = 0; j < numeroEdificios; j++ ){
             int _alturaEdificio = (5 - dificultad)  + rnd.nextInt(7);
-            int _color = rnd.nextInt(16);
+            int _color;
+            do{
+                _color = rnd.nextInt(16);
+            }while(_color == 0);
             edificios[j] = new Edificio(_alturaEdificio, _color);
         }
     }
@@ -167,6 +173,7 @@ public class BombarderoGameState implements GameState {
                 break;
             case JUEGO:
                 if (!gameOver) {
+
                     tickAvion(elapsedTime);
                 }
                 break;
@@ -213,6 +220,24 @@ public class BombarderoGameState implements GameState {
             }
 
         }
+    }
+
+    private void tickBomba(double elapsedTime)
+    {
+        List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
+        //Si no hay bomba, la generaremos
+        if (numBombas < 1)
+        {
+            /*for (TouchEvent t: touchEvents)
+            {
+                if (t.get_touchType() == TouchEvent.TouchType.TOUCH && t.get_ID() == TouchEvent.ButtonType.PRIMARY.ordinal()) {
+                    bomb = createTile(_gameManager.Sprites[GameManager.SpriteColor.LIGHT_GREEN.ordinal()][BOMB], planeRight.get_posX(), planeRight.get_posY() + 1);
+                    bombForce = _random.nextInt(RANDOM_BOMB_FORCE + 1) + MIN_BOMB_FORCE; // 2-4
+                }
+            }*/
+        }
+
+
     }
 
     @Override

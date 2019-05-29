@@ -23,7 +23,7 @@ public class Logica implements GameState {
     //UTILS
     private int _dificultad;
 
-    public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion};
+    public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion, character};
     public enum Colores { negro, verde, rojo, morado, verdeOscuro, naranja, azulOscuro,
                             amarillo, rosa, blanco, aguamarina, azulClaro, caqui, naranjaClaro, azul, verdeClaro}
 
@@ -47,7 +47,7 @@ public class Logica implements GameState {
         _resourceManager = new ResourceManager(juego.GetGraphics());
         //<Creamos los estados de juego>
 
-        _BombarderoGameState = new BombarderoGameState(_resourceManager, juego.GetGraphics());
+        _BombarderoGameState = new BombarderoGameState(_resourceManager, juego);
 
         //TODO: calcular dificultad
         init();

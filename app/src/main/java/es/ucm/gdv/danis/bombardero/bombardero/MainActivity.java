@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 // Punto de entrada para Android //
 public class MainActivity extends AppCompatActivity {
@@ -42,8 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
         //_juegoAndroid = new GameAndroid(_renderView, this.getAssets());
 
+
         _androidGraphics = new GraphicsAndroid(_renderView, this.getAssets());
         _androidInput = new InputAndroid();
+
+        _renderView.setOnTouchListener(_androidInput);
 
         //Input
         //_renderView.setOnTouchListener(Input);
