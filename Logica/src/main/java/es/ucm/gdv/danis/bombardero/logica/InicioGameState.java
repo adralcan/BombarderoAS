@@ -22,7 +22,7 @@ public class InicioGameState implements GameState {
     //Atributos
     //TODO: calcular cual es la cadena más larga para saber las dimensiones/escalado
     private static int _TileSizeX, _TileSizeY;
-    private static int _OffsetX, _OffsetY;
+    int _marginY;
 
     boolean _textosCargados;
 
@@ -42,8 +42,7 @@ public class InicioGameState implements GameState {
 
         _estadoActual = estadoMenu.inicio;
         initTexto();
-        calculateTileDimensions();
-        initTiles();
+
     }
 
     private void calculateTileDimensions(){
@@ -56,18 +55,32 @@ public class InicioGameState implements GameState {
             }
         }
 
+        float tileAR = 0.0f;
+
         _TileSizeX = _juego.GetGraphics().getWidth() / (anchoTexto);
-        _TileSizeY = (_juego.GetGraphics().getHeight()-300)/ (altoTexto);
+        _TileSizeY = (_juego.GetGraphics().getHeight())/ (altoTexto);
 
-        _OffsetX =  _TileSizeX + (_juego.GetGraphics().getWidth() % (anchoTexto))/ 2;
-        _OffsetY =  _TileSizeY + ((_juego.GetGraphics().getHeight()) % (altoTexto))/ 2;
+        tileAR = (float)_TileSizeX/(float)_TileSizeY;
+        if(tileAR > 1.7f){
+            _TileSizeX = (int)(Math.floor((1.7f*_TileSizeY)));
 
+        }
+        else if (tileAR < 0.8f){
+            _TileSizeY = (int)(Math.floor((_TileSizeX/1.f)));
+            _marginY = _juego.GetGraphics().getHeight() -(_TileSizeY*altoTexto);
+
+        }
     }
 
     private void initTexto(){
+
+        cadenasTexto.clear();
+        tilesTexto.clear();
+
+
         switch (_estadoActual){
             case inicio:
-                cadenasTexto.clear();
+                cadenasTexto.add("");
                 cadenasTexto.add("Usted esta pilotando un avion sobre una");
                 cadenasTexto.add("ciudad desierta y tiene que pasar sobre");
                 cadenasTexto.add("los edificios para aterrizar y repos-");
@@ -91,13 +104,18 @@ public class InicioGameState implements GameState {
 
                 break;
             case dificultad:
-                cadenasTexto.clear();
+
+                cadenasTexto.add("Elija nivel: 0 (AS) a 5 (principiante)");
+                cadenasTexto.add("0 1 2 3 4 5");
+
                 break;
             case velocidad:
-                cadenasTexto.clear();
 
                 break;
         }
+
+        calculateTileDimensions();
+        initTiles();
     }
 
     private void initTiles(){
@@ -106,7 +124,7 @@ public class InicioGameState implements GameState {
             char[] chars = str.toCharArray();
 
             for (int j = 0; j < chars.length; j++) {
-                Tile tmpTile = new Tile(_resourceManager, chars[j], Logica.Colores.verde, 20 + (i*2), 20 + (i*2), _OffsetX * j, _OffsetY*i, _TileSizeX, _TileSizeY);
+                Tile tmpTile = new Tile(_resourceManager, chars[j], Logica.Colores.verde, 0, 0, _TileSizeX * j, _TileSizeY*i +_marginY/2, _TileSizeX, _TileSizeY);
                 if(i ==cadenasTexto.size()-1)
                     tmpTile.setTile(Logica.Colores.rojo, chars[j]);
                 tilesTexto.add(tmpTile);
@@ -124,6 +142,7 @@ public class InicioGameState implements GameState {
                 tickInicio();
                 break;
             case dificultad:
+                tickDificultad();
                 break;
             case velocidad:
 
@@ -137,6 +156,7 @@ public class InicioGameState implements GameState {
         for (TouchEvent touchEvent:touchEvents) {
             if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
                 _estadoActual = estadoMenu.dificultad;
+                initTexto();
             }
         }
     }
@@ -159,7 +179,7 @@ public class InicioGameState implements GameState {
 
     @Override
     public float getVelocity() {
-        return 1;
+        return 500;
     }
 
     @Override
