@@ -53,6 +53,7 @@ public class Logica implements GameState {
         //<Creamos los estados de juego>
 
         _currentGameState = new InicioGameState(_resourceManager, juego);
+        _estadoActual = estados.menu;
         //_currentGameState = new BombarderoGameState(_resourceManager, juego);
 
         //TODO: calcular dificultad
@@ -87,6 +88,7 @@ public class Logica implements GameState {
             case menu:
                 //_dificultad = _currentGameState.getDificultad();
                  _currentGameState = new BombarderoGameState(_resourceManager, juego);
+                _estadoActual = estados.bombardero;
                 break;
             case bombardero:
                 break;

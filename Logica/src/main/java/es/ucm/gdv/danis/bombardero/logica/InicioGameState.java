@@ -15,9 +15,20 @@ public class InicioGameState implements GameState {
     estadoMenu _estadoActual;
     Boolean _isStateOver;
 
+    public class Parrafo{
+        public Parrafo(LinkedList<String> s, Logica.Colores c){
+            cadenas = s;
+            color = c;
+            tiles = new LinkedList<>();
+        } //Los tiles se añaden despues
+
+        public LinkedList<String> cadenas;
+        public Logica.Colores color;
+        public LinkedList<Tile> tiles;
+    }
+
     //Texto
-    LinkedList<Tile> tilesTexto;
-    LinkedList<String> cadenasTexto;
+    LinkedList<Parrafo> parrafos;
 
     //Atributos
     //TODO: calcular cual es la cadena más larga para saber las dimensiones/escalado
@@ -34,8 +45,7 @@ public class InicioGameState implements GameState {
         _resourceManager = res;
         _juego = juego;
 
-        tilesTexto = new LinkedList<>();
-        cadenasTexto = new LinkedList<>();
+        parrafos = new LinkedList<>();
 
         _isStateOver = false;
         _textosCargados = false;
@@ -48,10 +58,14 @@ public class InicioGameState implements GameState {
     private void calculateTileDimensions(){
 
         int anchoTexto = 0;
-        int altoTexto = cadenasTexto.size();
-        for (String str:cadenasTexto) {
-            if(str.length() > anchoTexto){
-                anchoTexto = str.length();
+        int altoTexto = 0;
+
+        for (Parrafo parr:parrafos) {
+            for (String str:parr.cadenas) {
+                if (str.length() > anchoTexto) {
+                    anchoTexto = str.length();
+                }
+                altoTexto++;
             }
         }
 
@@ -74,42 +88,66 @@ public class InicioGameState implements GameState {
 
     private void initTexto(){
 
-        cadenasTexto.clear();
-        tilesTexto.clear();
-
+        parrafos = new LinkedList<>(); //Clear no funciona como queremos
+        LinkedList<String> listaAux = new LinkedList<>();
+        Parrafo aux = null;
 
         switch (_estadoActual){
             case inicio:
-                cadenasTexto.add("");
-                cadenasTexto.add("Usted esta pilotando un avion sobre una");
-                cadenasTexto.add("ciudad desierta y tiene que pasar sobre");
-                cadenasTexto.add("los edificios para aterrizar y repos-");
-                cadenasTexto.add("tar. Su avion se mueve de izquierda a");
-                cadenasTexto.add("derecha.");
-                cadenasTexto.add(" ");
-                cadenasTexto.add("Al llegar a la derecha, el avion vuelve");
-                cadenasTexto.add("a salir por la izquierda, pero MAS BAJO.");
-                cadenasTexto.add("Dispone de un numero limitado de bombas");
-                cadenasTexto.add("y puede hacerlas caer sobre los edifi-");
-                cadenasTexto.add("cios pulsando sobre la pantalla.");
-                cadenasTexto.add(" ");
-                cadenasTexto.add("Cada vez que aterriza, sube la altura");
-                cadenasTexto.add("de los edificios y la velocidad.");
-                cadenasTexto.add(" ");
-                cadenasTexto.add("UNA VEZ DISPARADA UNA BOMBA, YA NO PUEDE");
-                cadenasTexto.add("DISPARAR OTRA MIENTRAS NO HAYA EXPLOSIO-");
-                cadenasTexto.add("NADO LA PRIMERA!!!!");
-                cadenasTexto.add("");
-                cadenasTexto.add("Pulse para empezar");
+                listaAux.add("");
+                listaAux.add("Usted esta pilotando un avion sobre una");
+                listaAux.add("ciudad desierta y tiene que pasar sobre");
+                listaAux.add("los edificios para aterrizar y repos-");
+                listaAux.add("tar. Su avion se mueve de izquierda a");
+                listaAux.add("derecha.");
+                listaAux.add(" ");
+                listaAux.add("Al llegar a la derecha, el avion vuelve");
+                listaAux.add("a salir por la izquierda, pero MAS BAJO.");
+                listaAux.add("Dispone de un numero limitado de bombas");
+                listaAux.add("y puede hacerlas caer sobre los edifi-");
+                listaAux.add("cios pulsando sobre la pantalla.");
+                listaAux.add(" ");
+                listaAux.add("Cada vez que aterriza, sube la altura");
+                listaAux.add("de los edificios y la velocidad.");
+                listaAux.add(" ");
+                listaAux.add("UNA VEZ DISPARADA UNA BOMBA, YA NO PUEDE");
+                listaAux.add("DISPARAR OTRA MIENTRAS NO HAYA EXPLOSIO-");
+                listaAux.add("NADO LA PRIMERA!!!!");
+                listaAux.add("");
+                aux = new Parrafo(listaAux, Logica.Colores.verde);
+                parrafos.add(aux);
 
+                listaAux = new LinkedList<>();
+                listaAux.add("Pulse para empezar");
+                aux = new Parrafo(listaAux, Logica.Colores.rojo);
+                parrafos.add(aux);
                 break;
             case dificultad:
+                listaAux = new LinkedList<>();
+                listaAux.add("Elija nivel: 0 (AS) a 5 (principiante)");
+                aux = new Parrafo(listaAux, Logica.Colores.rojo);
+                parrafos.add(aux);
 
-                cadenasTexto.add("Elija nivel: 0 (AS) a 5 (principiante)");
-                cadenasTexto.add("0 1 2 3 4 5");
-
+                listaAux = new LinkedList<>();
+                listaAux.add("0 1 2 3 4 5");
+                aux = new Parrafo(listaAux, Logica.Colores.blanco);
+                parrafos.add(aux);
                 break;
             case velocidad:
+                listaAux = new LinkedList<>();
+                listaAux.add("Elija velocidad: 0 (MAX) a 9 (MIN)");
+                aux = new Parrafo(listaAux, Logica.Colores.rojo);
+                parrafos.add(aux);
+
+                listaAux = new LinkedList<>();
+                listaAux.add("0 1 2 3 4");
+                aux = new Parrafo(listaAux, Logica.Colores.blanco);
+                parrafos.add(aux);
+
+                listaAux = new LinkedList<>();
+                listaAux.add("5 6 7 8 9");
+                aux = new Parrafo(listaAux, Logica.Colores.blanco);
+                parrafos.add(aux);
 
                 break;
         }
@@ -119,15 +157,19 @@ public class InicioGameState implements GameState {
     }
 
     private void initTiles(){
-        for(int i = 0; i < cadenasTexto.size(); i++) {
-            String str = cadenasTexto.get(i);
-            char[] chars = str.toCharArray();
+        int cont = 0;
+        for(int i = 0; i < parrafos.size(); i++) {
 
-            for (int j = 0; j < chars.length; j++) {
-                Tile tmpTile = new Tile(_resourceManager, chars[j], Logica.Colores.verde, 0, 0, _TileSizeX * j, _TileSizeY*i +_marginY/2, _TileSizeX, _TileSizeY);
-                if(i ==cadenasTexto.size()-1)
-                    tmpTile.setTile(Logica.Colores.rojo, chars[j]);
-                tilesTexto.add(tmpTile);
+            for (String str : parrafos.get(i).cadenas) {
+                cont++;
+
+                char[] chars = str.toCharArray();
+
+                for (int j = 0; j < chars.length; j++) {
+                    Tile tmpTile = new Tile(_resourceManager, chars[j], parrafos.get(i).color, 0, 0, _TileSizeX * j, _TileSizeY * (i + cont) + _marginY / 2, _TileSizeX, _TileSizeY);
+
+                    parrafos.get(i).tiles.add(tmpTile);
+                }
             }
         }
 
@@ -145,7 +187,7 @@ public class InicioGameState implements GameState {
                 tickDificultad();
                 break;
             case velocidad:
-
+                tickVelocidad();
                 break;
         }
 
@@ -162,17 +204,35 @@ public class InicioGameState implements GameState {
     }
 
     private void tickDificultad(){
+        List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
+        for (TouchEvent touchEvent:touchEvents) {
+            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
+                _estadoActual = estadoMenu.velocidad;
+                initTexto();
+            }
+        }
 
     }
     private void tickVelocidad(){
+        List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
+        for (TouchEvent touchEvent:touchEvents) {
+            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
+                //_estadoActual = estadoMenu.dificultad;
+                //initTexto();
+                _isStateOver = true;
+            }
+        }
 
     }
 
     @Override
     public void render() {
         if(_textosCargados) {
-            for (int i = 0; i < tilesTexto.size(); i++) {
-                tilesTexto.get(i).drawTile(_juego.GetGraphics());
+            for (Parrafo parr:parrafos) {
+
+                for (int i = 0; i < parr.tiles.size(); i++) {
+                    parr.tiles.get(i).drawTile(_juego.GetGraphics());
+                }
             }
         }
     }
