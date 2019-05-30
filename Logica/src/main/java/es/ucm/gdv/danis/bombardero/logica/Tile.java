@@ -17,7 +17,7 @@ public class Tile {
     private int  _TamDestX, _TamDestY;
 
 
-    public Tile(ResourceManager res,int x , int y, int coordX, int coordY, int tamDestX, int tamDestY,  Logica.Colores color, Logica.info info){
+    public Tile(ResourceManager res, int x , int y, int coordX, int coordY, int tamDestX, int tamDestY,  Logica.Colores color, Logica.info info){
 
         //Multipicamos por 16 para el pintado logico de matriz a pantalla
 
@@ -35,9 +35,26 @@ public class Tile {
 
     }
 
+    public Tile(ResourceManager res, char c, Logica.Colores color, int x, int y, int coordX, int coordY, int tamX, int tamY){
+
+        _PosMatrizX = x;
+        _PosMatrizY = y;
+        _coordX = coordX;
+        _coordY = coordY;
+        _TamDestX = tamX;
+        _TamDestY = tamY;
+
+        _resourceManager = res;
+        _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color, (int)c);
+
+    }
+
     public void setTile(Logica.Colores color, Logica.info info){
         _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color,  interpretaTipo(info));
         _infoTile = info;
+    }
+    public void setTile(Logica.Colores color, char c){
+        _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color, (int)c);
     }
 
 
@@ -73,11 +90,8 @@ public class Tile {
             case explosion3:
                 indice =  253;
                 break;
-            case character:
-                break;
 
         }
-
         return indice;
     }
 
@@ -86,7 +100,13 @@ public class Tile {
         _TileSprite.drawSprite(graphics, _coordX , _coordY, _TamDestX, _TamDestY);
     }
 
+    //Devuelve true si (x,y) está dentro del tile en la pantalla
+    public boolean clickOnTile(int x, int y){
+        return (_coordX + _TamDestX >= x && _coordY + _TamDestY <= y);
+    }
 
+
+    //GETTERS
     public int get_PosMatrizX() {
         return _PosMatrizX;
     }

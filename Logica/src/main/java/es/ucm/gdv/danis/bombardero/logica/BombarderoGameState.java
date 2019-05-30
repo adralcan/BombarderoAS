@@ -18,6 +18,7 @@ public class BombarderoGameState implements GameState {
     enum Estados{ CINEMATICA, JUEGO, WIN, LOSE}
 
     Estados estadoActual;
+    boolean _isStateOver;
 
     private float _velocidadActual;
     private final float velocidadCinematica = 250.0f;
@@ -79,6 +80,8 @@ public class BombarderoGameState implements GameState {
         _resourceManager = res;
         _juego = juego;
         _graphics = _juego.GetGraphics();
+
+        _isStateOver = false;
 
         tablero = new Tile[Ancho_Tablero][Alto_Tablero];
         estadoActual = Estados.CINEMATICA;
@@ -186,8 +189,10 @@ public class BombarderoGameState implements GameState {
                 }
                 break;
             case WIN:
+                _isStateOver = true;
                 break;
             case LOSE:
+                _isStateOver = true;
                 break;
         }
     }
@@ -311,6 +316,11 @@ public class BombarderoGameState implements GameState {
     @Override
     public float getVelocity() {
         return _velocidadActual;
+    }
+
+    @Override
+    public boolean getStateOver() {
+        return _isStateOver;
     }
 
 
