@@ -31,14 +31,20 @@ public class InicioGameState implements GameState {
     LinkedList<Parrafo> parrafos;
 
     //Atributos
-    //TODO: calcular cual es la cadena más larga para saber las dimensiones/escalado
     private static int _TileSizeX, _TileSizeY;
+    private static int _anchoTexto, _altoTexto;
+
+    int _marginX;
     int _marginY;
 
     boolean _textosCargados;
 
     private Game _juego;
     ResourceManager _resourceManager;
+
+    //Speed and velocity
+    private int _dificultad;
+    private int _velocidad;
 
 
     public InicioGameState(ResourceManager res, Game juego){
@@ -53,35 +59,38 @@ public class InicioGameState implements GameState {
         _estadoActual = estadoMenu.inicio;
         initTexto();
 
+        _marginY = _marginX = 16;
     }
 
     private void calculateTileDimensions(){
 
-        int anchoTexto = 0;
-        int altoTexto = 0;
+        _anchoTexto = _altoTexto = 0;
 
         for (Parrafo parr:parrafos) {
             for (String str:parr.cadenas) {
-                if (str.length() > anchoTexto) {
-                    anchoTexto = str.length();
+                if (str.length() > _anchoTexto) {
+                    _anchoTexto = str.length();
                 }
-                altoTexto++;
+                _altoTexto++;
             }
         }
 
+
+
         float tileAR = 0.0f;
 
-        _TileSizeX = _juego.GetGraphics().getWidth() / (anchoTexto);
-        _TileSizeY = (_juego.GetGraphics().getHeight())/ (altoTexto);
+        _TileSizeX = _juego.GetGraphics().getWidth() / (_anchoTexto);
+        _TileSizeY = (_juego.GetGraphics().getHeight())/ (_altoTexto);
 
         tileAR = (float)_TileSizeX/(float)_TileSizeY;
         if(tileAR > 1.7f){
             _TileSizeX = (int)(Math.floor((1.7f*_TileSizeY)));
+            _marginX = _juego.GetGraphics().getWidth()-(_TileSizeX*_anchoTexto);
 
         }
         else if (tileAR < 0.8f){
             _TileSizeY = (int)(Math.floor((_TileSizeX/1.f)));
-            _marginY = _juego.GetGraphics().getHeight() -(_TileSizeY*altoTexto);
+            _marginY = _juego.GetGraphics().getHeight() -(_TileSizeY*_altoTexto);
 
         }
     }
@@ -157,16 +166,21 @@ public class InicioGameState implements GameState {
     }
 
     private void initTiles(){
-        int cont = 0;
+        int contY = 0;
         for(int i = 0; i < parrafos.size(); i++) {
 
             for (String str : parrafos.get(i).cadenas) {
-                cont++;
+                contY++;
+
 
                 char[] chars = str.toCharArray();
 
                 for (int j = 0; j < chars.length; j++) {
-                    Tile tmpTile = new Tile(_resourceManager, chars[j], parrafos.get(i).color, 0, 0, _TileSizeX * j, _TileSizeY * (i + cont) + _marginY / 2, _TileSizeX, _TileSizeY);
+                    int coordX = _TileSizeX * j;
+                    if(coordX > _juego.GetGraphics().getWidth()-100){
+                    }
+                    Tile tmpTile = new Tile(_resourceManager, chars[j], parrafos.get(i).color, i, j, _TileSizeX *  j, _TileSizeY * (i + contY) + _marginY / 2, _TileSizeX, _TileSizeY);
+                    //Tile tmpTile = new Tile(_resourceManager, i, j, _TileSizeX * j,  _TileSizeY * (i + cont) + _marginY / 2, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
 
                     parrafos.get(i).tiles.add(tmpTile);
                 }
@@ -207,8 +221,26 @@ public class InicioGameState implements GameState {
         List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
         for (TouchEvent touchEvent:touchEvents) {
             if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
-                _estadoActual = estadoMenu.velocidad;
-                initTexto();
+                //Empieza en 1 porque el primer parrafo no nos interesa
+                for(int i = 1; i < parrafos.size(); i++) {
+                    int j = 0;
+                    boolean stop = false;
+                    while (!stop && j < parrafos.get(i).tiles.size()){
+                        if(parrafos.get(i).tiles.get(j).clickOnTile(touchEvent.get_x(), touchEvent.get_y())){
+                            stop = true;
+                            char c = parrafos.get(i).tiles.get(j).get_charTile();
+
+                            //Restamos por 48 = 0, para que quede el número exacto
+                            _dificultad = (int)c - 48;
+                            System.out.println("AAAAA - " + _dificultad);
+
+                            _estadoActual = estadoMenu.velocidad;
+                            initTexto();
+                        }
+
+                        j++;
+                    }
+                }
             }
         }
 
@@ -217,9 +249,27 @@ public class InicioGameState implements GameState {
         List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
         for (TouchEvent touchEvent:touchEvents) {
             if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
-                //_estadoActual = estadoMenu.dificultad;
-                //initTexto();
-                _isStateOver = true;
+                //Empieza en 1 porque el primer parrafo no nos interesa
+                for(int i = 1; i < parrafos.size(); i++) {
+                    int j = 0;
+                    boolean stop = false;
+                    while (!stop && j < parrafos.get(i).tiles.size()){
+                        if(parrafos.get(i).tiles.get(j).clickOnTile(touchEvent.get_x(), touchEvent.get_y())){
+                            stop = true;
+                            char c = parrafos.get(i).tiles.get(j).get_charTile();
+
+                            //Restamos por 48 = 0, para que quede el número exacto
+                            _velocidad = (int)c - 48;
+                            System.out.println("AAAAA - " + _velocidad);
+
+                            _isStateOver = true;
+                            //initTexto();
+                        }
+
+                        j++;
+                    }
+                }
+
             }
         }
 
@@ -247,4 +297,11 @@ public class InicioGameState implements GameState {
         return _isStateOver;
     }
 
+    public int get_dificultad(){
+        return _dificultad;
+    }
+
+    public int get_velocidad(){
+        return _velocidad;
+    }
 }

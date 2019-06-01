@@ -6,13 +6,13 @@ public class Tile {
 
     private ResourceManager _resourceManager;
 
-    private Logica.Colores _colorImg; //Seguramente no haga falta
+    private Logica.info _infoTile;                  //InfoTile
+    private Sprite _TileSprite;                     //Sprite asociado al tile
+    private char _charTile;                         //Char asociado al tile
 
-    private Logica.info _infoTile;
-    private Sprite _TileSprite;
+    private int _PosMatrizX, _PosMatrizY;           //Posicion en la matriz de Tiles
 
     private int _coordX, _coordY;
-    private int _PosMatrizX, _PosMatrizY;
     private int _DestPosX, _DestPosY;
     private int  _TamDestX, _TamDestY;
 
@@ -23,6 +23,7 @@ public class Tile {
 
         _PosMatrizX = x;
         _PosMatrizY = y;
+
         _coordX = coordX;
         _coordY = coordY;
         _TamDestX = tamDestX;
@@ -46,6 +47,7 @@ public class Tile {
 
         _resourceManager = res;
         _TileSprite = _resourceManager.GetSpriteAPartirDeAscii(color, (int)c);
+        _charTile = c;
 
     }
 
@@ -102,7 +104,11 @@ public class Tile {
 
     //Devuelve true si (x,y) está dentro del tile en la pantalla
     public boolean clickOnTile(int x, int y){
-        return (_coordX + _TamDestX >= x && _coordY + _TamDestY <= y);
+        return ((x > _coordX && x < (_coordX + _TamDestX) && y > _coordY && y < (_coordY+_TamDestY)));
+    }
+
+    public char get_charTile(){
+        return _charTile;
     }
 
 

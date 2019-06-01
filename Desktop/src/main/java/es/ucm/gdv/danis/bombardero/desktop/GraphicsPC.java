@@ -53,15 +53,21 @@ import es.ucm.gdv.danis.bombardero.fachada.Image;
     }
 
      @Override
-     public void drawImageFromSpritesheet(Image image, int x, int y, int tam, int imgX, int imgY) {
+     public void drawImageFromSpritesheet(Image image, int x, int y, int tamTileX, int tamTileY, int imgX, int imgY) {
          ImagePC img = (ImagePC) image;
          java.awt.Image img2draw = img.getImage();
 
          //The src parameters represent the area of the image to copy and draw. The dst parameters display the area of the destination to cover by the the source area.
-        g.drawImage(img2draw, x, y, x+tam, y+tam,
-                imgX * 16,  imgY * 16, ((imgX * 16) + (img.getWidth() / 16)), ((imgY*16) + (img.getHeight()/ 16)),
-                null);
+         g.drawImage(img2draw, x, y, x+tamTileX, y+tamTileY,
+                 imgX * 16,  imgY * 16, ((imgX * 16) + (img.getWidth() / 16)), ((imgY*16) + (img.getHeight()/ 16)),
+                 null);
      }
+
+     @Override
+     public void drawText(Image image, String texto, int tamTileX, int tamTileY, int imgX, int imgY) {
+        //TODO: this
+     }
+
 
 
      @Override
