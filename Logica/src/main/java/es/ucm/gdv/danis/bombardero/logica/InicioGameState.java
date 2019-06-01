@@ -41,15 +41,17 @@ public class InicioGameState implements GameState {
 
     private Game _juego;
     ResourceManager _resourceManager;
+    Logica _logica;
 
     //Speed and velocity
     private int _dificultad;
     private int _velocidad;
 
 
-    public InicioGameState(ResourceManager res, Game juego){
+    public InicioGameState(ResourceManager res, Game juego, Logica l){
         _resourceManager = res;
         _juego = juego;
+        _logica = l;
 
         parrafos = new LinkedList<>();
 
@@ -227,15 +229,17 @@ public class InicioGameState implements GameState {
                     boolean stop = false;
                     while (!stop && j < parrafos.get(i).tiles.size()){
                         if(parrafos.get(i).tiles.get(j).clickOnTile(touchEvent.get_x(), touchEvent.get_y())){
-                            stop = true;
+
                             char c = parrafos.get(i).tiles.get(j).get_charTile();
 
                             //Restamos por 48 = 0, para que quede el número exacto
-                            _dificultad = (int)c - 48;
-                            System.out.println("AAAAA - " + _dificultad);
-
-                            _estadoActual = estadoMenu.velocidad;
-                            initTexto();
+                            _dificultad = (int) c - 48;
+                            if(_dificultad >= 0) {
+                                stop = true;
+                                _estadoActual = estadoMenu.velocidad;
+                                _logica.setDificultad(_dificultad);
+                                initTexto();
+                            }
                         }
 
                         j++;
@@ -248,7 +252,7 @@ public class InicioGameState implements GameState {
     private void tickVelocidad(){
         List<TouchEvent> touchEvents =  _juego.GetInput().getTouchEvents();
         for (TouchEvent touchEvent:touchEvents) {
-            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
+            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click && touchEvent.get_inputID() == TouchEvent.TouchType.click.ordinal()){
                 //Empieza en 1 porque el primer parrafo no nos interesa
                 for(int i = 1; i < parrafos.size(); i++) {
                     int j = 0;
@@ -260,12 +264,12 @@ public class InicioGameState implements GameState {
 
                             //Restamos por 48 = 0, para que quede el número exacto
                             _velocidad = (int)c - 48;
-                            System.out.println("AAAAA - " + _velocidad);
-
-                            _isStateOver = true;
-                            //initTexto();
+                            if(_velocidad >= 0) {
+                                stop = true;
+                                _logica.setVelocidad(_velocidad);
+                                _isStateOver = true;
+                            }
                         }
-
                         j++;
                     }
                 }
@@ -289,7 +293,7 @@ public class InicioGameState implements GameState {
 
     @Override
     public float getVelocity() {
-        return 500;
+        return 1;
     }
 
     @Override

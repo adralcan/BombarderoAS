@@ -11,7 +11,7 @@ import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import sun.java2d.Surface;
 
 
-public class Logica implements GameState {
+public class Logica {
 
     //Frames
     private float _lastFrame = 0;       //ultimo frame para el tiempo
@@ -22,6 +22,7 @@ public class Logica implements GameState {
 
     //UTILS
     private int _dificultad;
+    private int _velocidad = 0;
 
     public enum estados {menu, bombardero, gameover}
     public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion1, explosion2, explosion3};
@@ -52,27 +53,20 @@ public class Logica implements GameState {
         _resourceManager = new ResourceManager(juego.GetGraphics());
         //<Creamos los estados de juego>
 
-        _currentGameState = new InicioGameState(_resourceManager, juego);
+        _currentGameState = new InicioGameState(_resourceManager, juego, this);
         _estadoActual = estados.menu;
         //_currentGameState = new BombarderoGameState(_resourceManager, juego);
 
-        //TODO: calcular dificultad
-        init();
     }
 
-    void init(){
-        _dificultad = 3;
-        //tablero = new info[Ancho_Tablero][Alto_Tablero];
-        //fillTablero();
-    }
+
 
     //Update
-    @Override
     public void tick(double elapsedTime){
 
         _time += elapsedTime;
         if(_time > _lastFrame) {
-            _frameRate = (float) (_dificultad + 1) / getVelocity();
+            _frameRate = _currentGameState.getVelocity();
             _lastFrame = _time + _frameRate;
 
             if(_currentGameState.getStateOver()){
@@ -86,8 +80,7 @@ public class Logica implements GameState {
     private void changeCurrentState(){
         switch (_estadoActual) {
             case menu:
-                //_dificultad = _currentGameState.getDificultad();
-                 _currentGameState = new BombarderoGameState(_resourceManager, juego);
+                _currentGameState = new BombarderoGameState(_resourceManager, juego, this);
                 _estadoActual = estados.bombardero;
                 break;
             case bombardero:
@@ -97,23 +90,28 @@ public class Logica implements GameState {
         }
     }
 
-    @Override
     public void render() {
 
         juego.GetGraphics().clear(0xFF000000);
         _currentGameState.render();
     }
 
-    @Override
+
     public float getVelocity() {
-       return _currentGameState.getVelocity(); //TODO: _actualEstate.getVelocity();
+       return _currentGameState.getVelocity();
     }
 
-    @Override
-    public boolean getStateOver() {
-        return false;
+
+    public void setVelocidad(int velocidad){
+        _velocidad = velocidad;
     }
 
+    public void setDificultad(int dificultad){
+        _dificultad = dificultad;
+    }
+
+    public int getVelocidad(){return _velocidad;}
+    public int getDificultad(){return _dificultad;}
 }
 
 

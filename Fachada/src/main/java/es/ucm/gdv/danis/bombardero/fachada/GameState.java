@@ -10,4 +10,5 @@ public interface GameState {
     public float getVelocity();
 
     public boolean getStateOver();
+
 }

@@ -20,9 +20,11 @@ public class BombarderoGameState implements GameState {
     Estados estadoActual;
     boolean _isStateOver;
 
-    private float _velocidadActual;
+    private float _velocidadJuego;
+    private int   _dificultadJuego;
+
+    private final float velocidadBase = 30.0f;
     private final float velocidadCinematica = 250.0f;
-    private final float velocidadJuego = 30.0f;
 
     //Atributos Avión
     private int xAvion = 3;
@@ -54,7 +56,6 @@ public class BombarderoGameState implements GameState {
     private Image spriteSheetNegra, javaTest=null;
 
     //atributos cinematica
-    private int dificultad;
     private int i = 0;
     private int j = 22;
     private Random rnd;
@@ -73,19 +74,21 @@ public class BombarderoGameState implements GameState {
 
     private Game _juego;
     private Graphics _graphics;
+    private Logica _logica;
 
     private boolean gameOver = false;
 
-    public BombarderoGameState (ResourceManager res, Game juego){
+    public BombarderoGameState (ResourceManager res, Game juego, Logica logica){
         _resourceManager = res;
         _juego = juego;
         _graphics = _juego.GetGraphics();
+        _logica = logica;
 
         _isStateOver = false;
 
         tablero = new Tile[Ancho_Tablero][Alto_Tablero];
         estadoActual = Estados.CINEMATICA;
-        _velocidadActual = velocidadCinematica;
+        _velocidadJuego = 1 / velocidadCinematica;
 
 
         edificios = new Edificio[NumEdificios];
@@ -108,7 +111,6 @@ public class BombarderoGameState implements GameState {
         _OffsetX =  _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero))/ 2;
         _OffsetY =  _TileSizeY + (_graphics.getHeight() % (Alto_Tablero+10))/ 2;
 
-        dificultad = 2; //Provisional hasta que nos la pase el gamestate de seleccionar dificultad
         Tile edifTemp = null;
         rnd = new Random(); //Para generar alturas aleatorias
 
@@ -121,8 +123,10 @@ public class BombarderoGameState implements GameState {
     }
 
     void initAlturaEdificios(){
+        //Tomamos la dificultad de la logica
+        _dificultadJuego = _logica.getDificultad();
         for(int j = 0; j < numeroEdificios; j++ ){
-            int _alturaEdificio = (5 - dificultad)  + rnd.nextInt(7);
+            int _alturaEdificio = (5 - _dificultadJuego)  + rnd.nextInt(7);
             int _color;
             do{
                 _color = rnd.nextInt(16);
@@ -146,7 +150,6 @@ public class BombarderoGameState implements GameState {
 
 
     void initAvion(int x, int y){
-
 
         //Son dos tiles que siempre van juntos lmao
         //Pero las variables si que las vamos a mantener
@@ -177,7 +180,7 @@ public class BombarderoGameState implements GameState {
                 }
                 else{
                     estadoActual = Estados.JUEGO;
-                    _velocidadActual = velocidadJuego;
+                    _velocidadJuego = (_logica.getVelocidad() + 1) / velocidadBase;
                 }
 
                 break;
@@ -256,7 +259,7 @@ public class BombarderoGameState implements GameState {
             if(tablero[xBomba][yBomba].get_infoTile() == Logica.info.tejado || tablero[xBomba][yBomba].get_infoTile() == Logica.info.edificio){
                 Random rnd = new Random();
 
-                int edificiosDestruidos = 3; /*rnd.nextInt(3)+1;*/
+                int edificiosDestruidos = rnd.nextInt(3)+1;
                 for(int i = 0; i < edificiosDestruidos; i++){
                     tablero[xBomba][yBomba+(i-1)].setTile(Logica.Colores.rojo, Logica.info.nada);
                   tablero[xBomba][yBomba+i].setTile(Logica.Colores.rojo, Logica.info.explosion1);
@@ -315,7 +318,7 @@ public class BombarderoGameState implements GameState {
 
     @Override
     public float getVelocity() {
-        return _velocidadActual;
+        return _velocidadJuego;
     }
 
     @Override
@@ -324,167 +327,4 @@ public class BombarderoGameState implements GameState {
     }
 
 
-  /*  void tickBomba(double elapsedTime){
-        //Bomba
-        //Pide el input y revisa si se ha pulsado la pantalla.
-        //Si se ha pulsado y no hubiera bomba, crea una
-        List<TouchEvent> listaEventos = juego.GetInput().getTouchEvents();
-        int indiceEventos = 0;
-
-        while(!listaEventos.isEmpty()){
-            TouchEvent touchEvent = listaEventos.get(indiceEventos);
-            //Click izquierdo
-            if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click){
-                //Creamos una bomba!
-                if(numBombas == 0 && !gameOver){
-                    xBomba = xAvion+1;
-                    yBomba = yAvionCola;
-                    tablero[xBomba][yBomba] = Logica.info.bomba;
-                    numBombas++;
-                }
-            }
-
-            listaEventos.remove(indiceEventos);
-            indiceEventos++;
-        }
-
-        //Movimiento de la bomba y revisa colisiones con edificios
-        if(  numBombas!= 0 &&
-                tablero[xBomba+1][yBomba] == Logica.info.tejado || tablero[xBomba+1][yBomba] == Logica.info.edificio)
-        {
-            java.util.Random Random = new Random();
-            int nPisos;
-
-            nPisos = (Random.nextInt(3)) + 2;
-
-            System.out.printf("Numero de pisos " + nPisos);
-
-            //reventamos nPisos y la bomba
-            tablero[xBomba][yBomba] = Logica.info.nada;
-            numBombas = 0;
-            int indicePiso = 0;
-            while(indicePiso < nPisos){
-                //Compruebas si has llegado al final
-                if (tablero[xBomba + indicePiso][yBomba] == Logica.info.tejado || tablero[xBomba + indicePiso][yBomba] == Logica.info.edificio) {
-                    tablero[xBomba + indicePiso][yBomba] = Logica.info.nada;
-                }
-
-                else {}
-                indicePiso++;
-            }
-        }
-
-        else {
-            if(xBomba + 1 < 18) {
-                tablero[xBomba][yBomba] = Logica.info.nada;
-                if (numBombas != 0) {
-                    tablero[++xBomba][yBomba] = Logica.info.bomba;
-                }
-            }
-            else  {
-                tablero[xBomba][yBomba] = Logica.info.nada;
-                numBombas = 0;
-            }
-
-        }
-    }
-    void tickAvion(double elapsedTime){
-        //Mueve el avión e interpreta colisiones, de haberlas
-        //Movimiento horizontal y comprobacion
-        if(tablero[xAvion][yAvionMorro+1] == Logica.info.nada){
-
-            //Si se sale de la matriz por la derecha
-            if(yAvionMorro+1 > Ancho_Tablero){
-                //Reventamos esas localizaciones y movemos el avión
-                tablero[xAvion][yAvionMorro] = Logica.info.nada;
-                tablero[xAvion][yAvionCola]   = Logica.info.nada;
-
-                //Sumo la X y cambio la Y
-                xAvion++;
-                yAvionCola = 0;
-                yAvionMorro = 1;
-
-                tablero[xAvion][yAvionMorro]  = Logica.info.avionMorro;
-                tablero[xAvion][yAvionCola]   = Logica.info.avionCola;
-
-            }
-            //Comprueba si el avión ha llegado a la zona destino
-            if(xAvion == posFinalX){
-                //HAS GANAO HOSTIA
-                tablero[xAvion][yAvionMorro] = Logica.info.explosion;
-                tablero[xAvion][yAvionCola] = Logica.info.nada;
-            }
-            //Movimiento lateral básico
-            else {
-                tablero[xAvion][yAvionMorro] = Logica.info.avionCola;
-                tablero[xAvion][yAvionCola] = Logica.info.nada;
-
-                //Ahora la cola es el morro
-                yAvionCola = yAvionMorro;
-                //Aumentamos la Y y definimos la nueva posicion
-                yAvionMorro++;
-                tablero[xAvion][yAvionMorro] = Logica.info.avionMorro;
-                System.out.printf("x: " + xAvion + " y: " + yAvionMorro);
-                System.out.println();
-            }
-        }
-
-        else {
-            gameOver = true;
-            //Renderiza una explosion en lugar del avión
-            tablero[xAvion][yAvionMorro] = Logica.info.explosion;
-            tablero[xAvion][yAvionCola] = Logica.info.nada;
-
-        }
-
-
-    }*/
-
-  /*
-        @Override
-    public void render() {
-
-        //int imgw = spriteSheetNegra.getWidth(), imgh = spriteSheetNegra.getHeight();
-        //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x, y, 200,1,15);
-        //juego.GetGraphics().drawImage(spriteSheetNegra, x, y);
-
-        //DEBUG DE LA MATRIZ
-        //pintaMatrix(tablero);
-
-        int acumX = 0, acumY = 0;
-        int t = 30;
-        for (int x = 0; x <  tablero.length  ; x++) {
-            for (int y = 0; y < tablero[x].length; y++) {
-                switch (tablero[x][y]) {
-                    case edificio:
-                        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 9, 14);
-                        break;
-                    case tejado:
-                        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 4, 15);
-                        break;
-                    case avionCola:
-                        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 1, 15);
-                        break;
-                    case avionMorro:
-                        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 2, 15);
-                        break;
-                    case bomba:
-                        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 12, 15);
-                        break;
-                    case nada:
-                        //juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 1, 16);
-                        break;
-                    case explosion:
-                        juego.GetGraphics().drawImageFromSpritesheet(spriteSheetNegra, x + acumX, y + acumY, t, 14, 14);
-                        break;
-
-                }
-                acumX += t;
-            }
-            //Reset de la X y aumentamos Y
-            acumX = 0;
-            acumY += t;
-        }
-    }
-*/
 }
