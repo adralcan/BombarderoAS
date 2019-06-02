@@ -22,7 +22,7 @@ public class Logica {
 
     //UTILS
     private int _dificultad;
-    private int _velocidad = 0;
+    private float _velocidad = 0;
 
     private int puntosActuales = 0;
     private int puntosMaximos = 0;
@@ -106,15 +106,19 @@ public class Logica {
     }
 
 
-    public void setVelocidad(int velocidad){
-        _velocidad = velocidad;
+    public void setVelocidad(float velocidad){
+        if (velocidad >= 0)
+            _velocidad = velocidad;
+        else _velocidad = 0;
     }
 
     public void setDificultad(int dificultad){
-        _dificultad = dificultad;
+        if (dificultad >= 0)
+            _dificultad = dificultad;
+        else _dificultad = 0;
     }
 
-    public int getVelocidad(){return _velocidad;}
+    public float getVelocidad(){return _velocidad;}
     public int getDificultad(){return _dificultad;}
 
     public int getPuntosActuales() {
