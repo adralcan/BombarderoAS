@@ -24,6 +24,9 @@ public class Logica {
     private int _dificultad;
     private int _velocidad = 0;
 
+    private int puntosActuales = 0;
+    private int puntosMaximos = 0;
+
     public enum estados {menu, bombardero, gameover}
     public enum info {avionCola, avionMorro, bomba, tejado, edificio, nada, explosion1, explosion2, explosion3};
     public enum Colores { negro, verde, rojo, morado, verdeOscuro, naranja, azulOscuro,
@@ -78,6 +81,7 @@ public class Logica {
     }
 
     private void changeCurrentState(){
+        juego.GetInput().Clear();
         switch (_estadoActual) {
             case menu:
                 _currentGameState = new BombarderoGameState(_resourceManager, juego, this);
@@ -112,6 +116,22 @@ public class Logica {
 
     public int getVelocidad(){return _velocidad;}
     public int getDificultad(){return _dificultad;}
+
+    public int getPuntosActuales() {
+        return puntosActuales;
+    }
+
+    public void setPuntosActuales(int puntosActuales) {
+        this.puntosActuales = puntosActuales;
+    }
+
+    public int getPuntosMaximos() {
+        return puntosMaximos;
+    }
+
+    public void setPuntosMaximos(int puntosMaximos) {
+        this.puntosMaximos = puntosMaximos;
+    }
 }
 
 

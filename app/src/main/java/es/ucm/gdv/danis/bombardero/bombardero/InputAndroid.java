@@ -39,6 +39,10 @@ public class InputAndroid implements Input, View.OnTouchListener {
         }
     }
 
+    public void Clear() {
+        listaEventos.clear();
+    }
+
     public boolean onTouch(View view, MotionEvent event)
     {
         TouchEvent tipo = null;
