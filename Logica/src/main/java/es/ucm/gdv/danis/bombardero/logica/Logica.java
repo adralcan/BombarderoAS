@@ -123,6 +123,9 @@ public class Logica {
 
     public void setPuntosActuales(int puntosActuales) {
         this.puntosActuales = puntosActuales;
+        if(this.puntosActuales >= this.puntosMaximos) {
+            this.puntosMaximos = this.puntosActuales;
+        }
     }
 
     public int getPuntosMaximos() {

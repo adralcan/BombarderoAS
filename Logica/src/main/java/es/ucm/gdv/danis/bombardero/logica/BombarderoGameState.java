@@ -36,6 +36,7 @@ public class BombarderoGameState implements GameState {
     private int posFinalX = 18, posFinalY = 22;
 
     private int puntosPorEdificio = 5;
+    private int edificiosDestruidos;
 
 
     //BOMBA
@@ -281,6 +282,8 @@ public class BombarderoGameState implements GameState {
         for (TouchEvent touchEvent : touchEvents) {
             if (touchEvent.get_touchEvent() == TouchEvent.TouchType.click && numBombas < 1) {
                 numBombas++;
+                Random rnd = new Random();
+                edificiosDestruidos = rnd.nextInt(3)+2;
                 xBomba = xAvion;
                 yBomba = yAvion + 1;
                 tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.bomba);
@@ -290,9 +293,8 @@ public class BombarderoGameState implements GameState {
         if (numBombas >= 1) {
             //Comprobamos colisiones
             if (tablero[xBomba][yBomba + 1].get_infoTile() == Logica.info.tejado || tablero[xBomba][yBomba + 1].get_infoTile() == Logica.info.edificio) {
-                Random rnd = new Random();
 
-                int edificiosDestruidos = rnd.nextInt(3)+2;
+                /*int edificiosDestruidos = rnd.nextInt(3)+2;
                 int i = 1;
                 while (i <= edificiosDestruidos && yBomba + i <= 22) {
                     tablero[xBomba][yBomba + i - 1].setTile(Logica.Colores.rojo, Logica.info.nada);
@@ -304,8 +306,20 @@ public class BombarderoGameState implements GameState {
                 Tile expl = tablero[xBomba][yBomba + (i - 1)];
                 listaExplosiones.add(expl);
                 _logica.setPuntosActuales(_logica.getPuntosActuales() + (puntosPorEdificio * i));
-                numBombas--;
+                numBombas--;*/
 
+                if (edificiosDestruidos > 0) {
+                    tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.nada);
+                    tablero[xBomba][yBomba + 1].setTile(Logica.Colores.rojo, Logica.info.explosion1);
+                    _logica.setPuntosActuales(_logica.getPuntosActuales() + puntosPorEdificio);
+                    edificiosDestruidos--;
+                    yBomba++;
+                }
+                else {
+                    Tile expl = tablero[xBomba][yBomba];
+                    listaExplosiones.add(expl);
+                    numBombas--;
+                }
             }
 
             else if (yBomba+1 >= 23) {
@@ -352,7 +366,8 @@ public class BombarderoGameState implements GameState {
             tablero[8 + j][Alto_Tablero - 1].setTile(Logica.Colores.blanco, aux[j]);
         }
 
-        String maxEnPlanNumeros = Integer.toString(_logica.getPuntosActuales());
+
+        String maxEnPlanNumeros = Integer.toString(_logica.getPuntosMaximos());
         aux = maxEnPlanNumeros.toCharArray();
 
         for (int j = 0; j < aux.length; j++) {
