@@ -69,7 +69,7 @@ public class BombarderoGameState implements GameState {
     private Random rnd;
 
     private int tick;
-    private final int ticksLose = 20;
+    private final int ticksLose = 10;
     //
 
     //< TABLERO >
@@ -160,7 +160,8 @@ public class BombarderoGameState implements GameState {
             tablero[j][Alto_Tablero - 1].setTile(Logica.Colores.rojo, aux[j]);
         }
 
-        String puntosEnPlanNumeros = Integer.toString(_logica.getPuntosActuales());
+        _logica.setPuntosActuales(0);
+        String puntosEnPlanNumeros = Integer.toString(0);
         aux = puntosEnPlanNumeros.toCharArray();
 
         for (int j = 0; j < aux.length; j++) {
@@ -174,7 +175,7 @@ public class BombarderoGameState implements GameState {
             tablero[13 + j][Alto_Tablero - 1].setTile(Logica.Colores.rojo, aux[j]);
         }
 
-        String maxEnPlanNumeros = Integer.toString(_logica.getPuntosActuales());
+        String maxEnPlanNumeros = Integer.toString(_logica.getPuntosMaximos());
         aux = maxEnPlanNumeros.toCharArray();
 
         for (int j = 0; j < aux.length; j++) {

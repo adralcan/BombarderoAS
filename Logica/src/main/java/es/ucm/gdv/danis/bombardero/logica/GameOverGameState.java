@@ -77,9 +77,14 @@ public class GameOverGameState implements GameState {
         LinkedList<String> listaAux = new LinkedList<>();
         Parrafo aux = null;
 
+        int puntos = _logica.getPuntosActuales();
+
         listaAux = new LinkedList<>();
-        listaAux.add("Has conseguido " + _logica.getPuntosActuales());
-        listaAux.add("aaaaaaaaaaaAAAAAAAAAAAA");
+        listaAux.add("Has conseguido " + puntos + " puntos");
+        if(puntos >= _logica.getPuntosMaximos()) {
+            listaAux.add("BATIO EL RECORD!!");
+        }
+        listaAux.add("Pulse para volver a empezar");
         aux = new Parrafo(listaAux, Logica.Colores.rojo);
         parrafos.add(aux);
 
