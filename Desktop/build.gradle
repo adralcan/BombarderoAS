@@ -3,6 +3,7 @@ apply plugin: 'java-library'
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':Fachada')
+    implementation project(path: ':Logica')
 }
 
 sourceCompatibility = "1.8"

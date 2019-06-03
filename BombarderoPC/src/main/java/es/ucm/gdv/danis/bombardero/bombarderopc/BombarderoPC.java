@@ -10,9 +10,9 @@ public class BombarderoPC {
     public static void main(String[] args){
 
         GamePC game = new GamePC();
-        Logica logica = new Logica(game,3);
+        Logica logica = new Logica(game);
 
-        game.setCurrentGameState((GameState)logica);    //Recordemos que logica es el gamestate del Bombardero
+        game.SetLogicaPc(logica);
         game.run();
     }
 }

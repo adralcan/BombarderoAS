@@ -89,10 +89,6 @@ public class GraphicsAndroid implements Graphics {
         }
     }
 
-    @Override
-    public void drawText(Image image, String texto, int tamTileX, int tamTileY, int imgX, int imgY) {
-
-    }
 
     @Override
     public int getWidth()

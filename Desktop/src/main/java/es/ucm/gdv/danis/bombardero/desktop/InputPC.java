@@ -13,7 +13,6 @@ import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
 
 public class InputPC implements Input, MouseListener {
     List<TouchEvent> inputList;
-    boolean pulsado;
 
     public InputPC(JFrame jFrame){
         inputList = new ArrayList<>();
@@ -31,18 +30,14 @@ public class InputPC implements Input, MouseListener {
     }
 
 
-    public void mouseClicked(TouchEvent touchEvent) {
-        //Click izquierdo
-        if(touchEvent.get_touchEvent() == TouchEvent.TouchType.click) {
-            inputList.add(touchEvent);  //Ahora tenemos un click almacenado :3
-            pulsado = true;
-        }
+    @Override
+    public void Clear(){
+        inputList.clear();
     }
-
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-
+        //Nada para que no se haga dos veces
     }
 
     @Override
@@ -51,7 +46,6 @@ public class InputPC implements Input, MouseListener {
         synchronized (this){
             inputList.add((touchEvent));
         }
-        //pulsado = true?
     }
 
     @Override

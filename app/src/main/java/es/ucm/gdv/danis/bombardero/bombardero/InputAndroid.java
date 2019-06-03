@@ -1,7 +1,5 @@
 package es.ucm.gdv.danis.bombardero.bombardero;
 
-//TODO: Implementar lo de la interfaz aqui
-
 import android.view.MotionEvent;
 import android.view.View;
 

@@ -59,7 +59,7 @@ public class InicioGameState implements GameState {
 
         float tileAR = 0.0f;
 
-        _TileSizeX = _juego.GetGraphics().getWidth() / (_anchoTexto);
+        _TileSizeX = (_juego.GetGraphics().getWidth()-1) / (_anchoTexto);
         _TileSizeY = (_juego.GetGraphics().getHeight()) / (_altoTexto);
 
         tileAR = (float) _TileSizeX / (float) _TileSizeY;
@@ -126,7 +126,7 @@ public class InicioGameState implements GameState {
                 for (int j = 0; j < chars.length; j++) {
                     int coordX = _TileSizeX * j;
 
-                    Tile tmpTile = new Tile(_resourceManager, chars[j], parrafos.get(i).color, i, j, _TileSizeX * j, _TileSizeY * (i + contY) + _marginY / 2, _TileSizeX, _TileSizeY);
+                    Tile tmpTile = new Tile(_resourceManager, chars[j], parrafos.get(i).color, i, j, (_TileSizeX * j) + 15, _TileSizeY * (i + contY) + _marginY / 2, _TileSizeX, _TileSizeY);
                     //Tile tmpTile = new Tile(_resourceManager, i, j, _TileSizeX * j,  _TileSizeY * (i + cont) + _marginY / 2, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
 
                     parrafos.get(i).tiles.add(tmpTile);

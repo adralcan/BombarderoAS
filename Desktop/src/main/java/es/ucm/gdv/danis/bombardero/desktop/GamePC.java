@@ -1,45 +1,49 @@
 package es.ucm.gdv.danis.bombardero.desktop;
 
-
-
 import java.awt.image.BufferStrategy;
 
 import es.ucm.gdv.danis.bombardero.fachada.Game;
 import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Input;
+import es.ucm.gdv.danis.bombardero.logica.Logica;
+
 import javax.swing.JFrame;
-
-
 
 public class GamePC implements Game, Runnable   {
 
     //Referencias a gráficos e input
+    BufferStrategy _bs;
     private GraphicsPC _graphicsPC;
-    BufferStrategy bs;
     private InputPC _inputPC;
-    private GameState currentGameState;
+    private JFrame _frame;
+    private Logica _logica;
 
+    //Atributos de pantalla
+    private final int _anchoPantalla = 400;
+    private final int _altoPantalla = 711;
+
+    //Ciclo de juego
     long lastFrameTime = System.nanoTime();
     long currentTime, nanoElapsedTime;
     double elapsedTime;
 
     public GamePC() {
-        JFrame frame = new JFrame();
+        _frame = new JFrame();
+        _frame.setVisible(true);
+        _frame.setSize(_anchoPantalla, _altoPantalla);
+        _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        do {
+            _bs = _frame.getBufferStrategy();
+            _frame.createBufferStrategy(2);
+            _bs = _frame.getBufferStrategy();
+        }
+        while(_bs == null);
 
         //Inicializa los motores
-        frame.setVisible(true);
-        frame.setSize(1000, 1000);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        bs = frame.getBufferStrategy();
-        while(bs == null){
-            frame.createBufferStrategy(2);
-            bs = frame.getBufferStrategy();
-        }
-
-        _graphicsPC = new GraphicsPC(frame);
-        _inputPC = new InputPC(frame);
+        _graphicsPC = new GraphicsPC(_frame);
+        _inputPC = new InputPC(_frame);
     }
 
     @Override
@@ -49,27 +53,24 @@ public class GamePC implements Game, Runnable   {
 
     @Override
     public Input GetInput() {
-        //Esto va regular, seguramente por dependencias
         return _inputPC;
     }
 
-    public void SetLogicaPc(){
-        //TODO: HACER ESTA PARTE
+    public void SetLogicaPc(Logica logica){
+        _logica = logica;
     }
 
     @Override
     public void run() {
-        int i = 0;
         while (true){
-            //Input->Logica->Pintado
-
+            //Calculo de frames
             currentTime = System.nanoTime();
             nanoElapsedTime = currentTime - lastFrameTime;
             elapsedTime = (double) nanoElapsedTime / 1E09;
             lastFrameTime = currentTime;
 
-
-            currentGameState.tick(elapsedTime);
+            //Tick de la logica
+            _logica.tick(elapsedTime);
 
             try {
                 Thread.sleep(100);
@@ -77,20 +78,14 @@ public class GamePC implements Game, Runnable   {
                 e.printStackTrace();
             }
 
-            java.awt.Graphics g = bs.getDrawGraphics();
             //Actualizas el graphics que va a usar GraphicsPC
+            java.awt.Graphics g = _bs.getDrawGraphics();
             _graphicsPC.setGraphics(g);
 
-            //Clear
-            _graphicsPC.clear(Integer.MAX_VALUE);
-
-            currentGameState.render(); //Pintar to-do
-
+            //Clear y render
+            _logica.render();
             g.dispose();
-
-            bs.show();
-
-            i++;
+            _bs.show();
         }
     }
 }

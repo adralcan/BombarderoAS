@@ -2,9 +2,9 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(path: ':Desktop')
     implementation project(':Logica')
     implementation project(':Fachada')
+    implementation project(path: ':Desktop')
 }
 
 sourceCompatibility = "1.7"

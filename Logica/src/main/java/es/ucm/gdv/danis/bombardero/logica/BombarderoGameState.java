@@ -14,13 +14,20 @@ import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
 //TODO: ORGANIZAR LAS VARIABLES
 public class BombarderoGameState implements GameState {
 
-    //ESTADOS BOMBARDERO GAME STATE
+    //Enumerado para mantener control sobre los diferentes estados del juego
     enum Estados {
         CINEMATICA, JUEGO, WIN, LOSE
     }
 
     Estados estadoActual;
+    //Variable comun a todos los gamestate para
+    //detectar cuando pasar de un estado a otro
     boolean _isStateOver;
+
+    //Atributos cinematica
+    private int i = 0;
+    private int j = 22;
+    private Random rnd;
 
     private float _velocidadJuego;
     private int _dificultadJuego;
@@ -37,7 +44,6 @@ public class BombarderoGameState implements GameState {
 
     private int puntosPorEdificio = 5;
     private int edificiosDestruidos;
-
 
     //BOMBA
     public int numBombas = 0;
@@ -63,14 +69,9 @@ public class BombarderoGameState implements GameState {
     private final int NumEdificios = 11;
     private Image spriteSheetNegra, javaTest = null;
 
-    //atributos cinematica
-    private int i = 0;
-    private int j = 22;
-    private Random rnd;
-
+    //ticks que se muestran antes de pasar a estado gameover
     private int tick;
     private final int ticksLose = 10;
-    //
 
     //< TABLERO >
     private Tile[][] tablero;
@@ -116,18 +117,20 @@ public class BombarderoGameState implements GameState {
     }
 
     void initMatriz() {
-        _TileSizeX = _graphics.getWidth() / (Ancho_Tablero);
-        _TileSizeY = _graphics.getHeight() / (Alto_Tablero + 2);
+
+        _TileSizeX = (_juego.GetGraphics().getWidth()-1) / (Ancho_Tablero);
+        _TileSizeY = _graphics.getHeight() / (Alto_Tablero + 5 );
 
         _OffsetX = _TileSizeX + (_graphics.getWidth() % (Ancho_Tablero)) / 2;
-        _OffsetY = _TileSizeY + (_graphics.getHeight() % (Alto_Tablero + 10)) / 2;
+        _OffsetY = _TileSizeY + (_graphics.getHeight() % (Alto_Tablero-10)) / 2;
+
 
         Tile edifTemp = null;
         rnd = new Random(); //Para generar alturas aleatorias
 
         for (int i = 0; i < Ancho_Tablero; i++) {
             for (int j = 0; j < Alto_Tablero; j++) {
-                edifTemp = new Tile(_resourceManager, i, j, i * _OffsetX, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
+                edifTemp = new Tile(_resourceManager, i, j, (i * _OffsetX) + 15, j * _OffsetY, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
                 tablero[i][j] = edifTemp;
             }
         }
@@ -148,6 +151,7 @@ public class BombarderoGameState implements GameState {
         initIU();
     }
 
+    //Tiles encargados de mostrar puntuacion
     void initIU() {
         for (int i = 0; i < Ancho_Tablero; i++) {
             tablero[i][Alto_Tablero - 2].setTile(Logica.Colores.blanco, '_');
@@ -183,7 +187,6 @@ public class BombarderoGameState implements GameState {
         }
     }
 
-
     boolean initEdificio(int x, int y) {
 
         Logica.Colores color = Logica.Colores.values()[edificios[x]._color];
@@ -195,14 +198,11 @@ public class BombarderoGameState implements GameState {
         } else return false;
     }
 
-
     void initAvion(int x, int y) {
 
-        //Son dos tiles que siempre van juntos lmao
-        //Pero las variables si que las vamos a mantener
+        //El avion esta compuesto por dos tiles, la posicion x corresponde al morro
         tablero[x - 1][y].setTile(Logica.Colores.rojo, Logica.info.avionCola);
         tablero[x][y].setTile(Logica.Colores.rojo, Logica.info.avionMorro);
-
     }
 
 
@@ -303,7 +303,7 @@ public class BombarderoGameState implements GameState {
             if (touchEvent.get_touchEvent() == TouchEvent.TouchType.click && numBombas < 1) {
                 numBombas++;
                 Random rnd = new Random();
-                edificiosDestruidos = 8; //rnd.nextInt(3)+2;
+                edificiosDestruidos = rnd.nextInt(3)+2;
                 xBomba = xAvion;
                 yBomba = yAvion + 1;
                 tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.bomba);

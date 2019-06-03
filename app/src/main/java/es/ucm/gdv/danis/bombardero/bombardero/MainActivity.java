@@ -1,14 +1,10 @@
 package es.ucm.gdv.danis.bombardero.bombardero;
 
-
-// IMPORTS
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-//Import del JUEGO
-//Import del GM (lógica)
 import es.ucm.gdv.danis.bombardero.fachada.Game;
 import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Input;
@@ -41,19 +37,13 @@ public class MainActivity extends AppCompatActivity {
         _renderView = new MyView(this);
         setContentView(_renderView);
 
-        //_juegoAndroid = new GameAndroid(_renderView, this.getAssets());
-
-
         _androidGraphics = new GraphicsAndroid(_renderView, this.getAssets());
         _androidInput = new InputAndroid();
 
         _renderView.setOnTouchListener(_androidInput);
 
-        //Input
-        //_renderView.setOnTouchListener(Input);
-
+        //Flag para iniciar la logica cuando los recursos se hayan cargado por completo
         IniciaLogica = false;
-        //_logicaJuego = new Logica(_juegoAndroid);
     }
 
    //Cuando la APP pasa a primer plano.
@@ -96,21 +86,19 @@ public class MainActivity extends AppCompatActivity {
 
                 _runningThread = new Thread(this);
                 _runningThread.start();
-
             }
         }
 
         @Override
         public void run() {
 
-            while (getWidth()<=0){} //Espera a que se inicialice el surfaceView
+            //Espera a que se inicialice el surfaceView
+            while (getWidth()<=0){
+            }
 
             if(!IniciaLogica){
                 _logicaJuego = new Logica(this);
                 IniciaLogica = true;
-            }
-            else {
-                //Calcular los tiles???
             }
 
             //Bucle principal
@@ -131,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 _androidGraphics.startFrame(c);
                 _logicaJuego.render();
                 sh.unlockCanvasAndPost(c);
-
             }
         }
 

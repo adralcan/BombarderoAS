@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.*;
 
 
+
 import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import es.ucm.gdv.danis.bombardero.fachada.Graphics;
 import es.ucm.gdv.danis.bombardero.fachada.Image;
@@ -13,15 +14,10 @@ import es.ucm.gdv.danis.bombardero.fachada.Image;
  class GraphicsPC implements Graphics  {
 
      java.awt.Graphics g;
-     JFrame Frame;
-
-     int anchoVentana;
-     int altoVentana;
+     JFrame _frame;
 
      GraphicsPC(JFrame jf){
-         Frame = jf;
-         anchoVentana = Frame.getWidth();
-         altoVentana = Frame.getHeight();
+         _frame = jf;
      }
 
 
@@ -33,7 +29,9 @@ import es.ucm.gdv.danis.bombardero.fachada.Image;
         Image ret = null;
 
          try {
-             _img = javax.imageio.ImageIO.read( new java.io.File(name));
+             System.out.println(System.getProperty("user.dir"));
+             _img = javax.imageio.ImageIO.read( new java.io.File("images/"+name));
+
              ret = new ImagePC(_img);
 
          } catch (IOException e) {
@@ -53,20 +51,20 @@ import es.ucm.gdv.danis.bombardero.fachada.Image;
     }
 
      @Override
-     public void drawImageFromSpritesheet(Image image, int x, int y, int tamTileX, int tamTileY, int imgX, int imgY) {
-         ImagePC img = (ImagePC) image;
-         java.awt.Image img2draw = img.getImage();
+     public void drawImageFromSpritesheet(Image image, int coordX, int coordY, int tamTileX, int tamTileY, int destX, int destY) {
 
-         //The src parameters represent the area of the image to copy and draw. The dst parameters display the area of the destination to cover by the the source area.
-         g.drawImage(img2draw, x, y, x+tamTileX, y+tamTileY,
-                 imgX * 16,  imgY * 16, ((imgX * 16) + (img.getWidth() / 16)), ((imgY*16) + (img.getHeight()/ 16)),
-                 null);
+        if(image != null) {
+            ImagePC img = (ImagePC) image;
+            java.awt.Image img2draw = img.getImage();
+            int tamSprite = 16;
+
+            //The src parameters represent the area of the image to copy and draw. The dst parameters display the area of the destination to cover by the the source area.
+            g.drawImage(img2draw, destX, destY, destX + tamTileX, destY + tamTileY,
+                    coordX * 16, coordY * 16, ((coordX * 16) + tamSprite), ((coordY * 16) + tamSprite),
+                    null);
+        }
      }
 
-     @Override
-     public void drawText(Image image, String texto, int tamTileX, int tamTileY, int imgX, int imgY) {
-        //TODO: this
-     }
 
 
 
@@ -80,11 +78,11 @@ import es.ucm.gdv.danis.bombardero.fachada.Image;
 
     //Ancho de la ventana
     public int getWidth(){
-        return anchoVentana;
+        return _frame.getWidth();
     }
     //Alto de la ventana
     public int getHeight(){
-        return altoVentana;
+        return _frame.getHeight();
     }
 
     public void setGraphics(java.awt.Graphics graphics) {
