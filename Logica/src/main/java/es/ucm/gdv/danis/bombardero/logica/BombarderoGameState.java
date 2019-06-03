@@ -68,6 +68,8 @@ public class BombarderoGameState implements GameState {
     private int j = 22;
     private Random rnd;
 
+    private int tick;
+    private final int ticksLose = 20;
     //
 
     //< TABLERO >
@@ -107,7 +109,7 @@ public class BombarderoGameState implements GameState {
         estadoActual = Estados.CINEMATICA;
         edificios = new Edificio[NumEdificios];
         listaExplosiones = new LinkedList<>();
-        _velocidadJuego = 1 / velocidadCinematica;
+        _velocidadJuego = 1 / (int)velocidadCinematica;
         initMatriz();
         initAlturaEdificios();
         initAvion(xAvion, yAvion);
@@ -218,9 +220,10 @@ public class BombarderoGameState implements GameState {
                         i++;
                         j = 22;
                     }
-                } else {
+                }
+                else {
                     estadoActual = Estados.JUEGO;
-                    _velocidadJuego = (_logica.getVelocidad() + 1) / velocidadBase;
+                    _velocidadJuego = (float)(_logica.getVelocidadMenu() + 1) / velocidadBase;
                 }
 
                 break;
@@ -228,17 +231,24 @@ public class BombarderoGameState implements GameState {
                 if (!gameOver) {
                     tickAvion(elapsedTime);
                     tickBomba(elapsedTime);
-                    tickExplosion();
                     tickIU();
+                    tickExplosion();
                 }
                 break;
             case WIN:
-                _logica.setDificultad(_dificultadJuego--);
-                _logica.setVelocidad(_velocidadJuego--);
+                _logica.restaDificultad();
+                _logica.restaVelocidadMenu();
                 initCiudad();
                 break;
+
             case LOSE:
-                _isStateOver = true;
+                tick++;
+                if(tick <= ticksLose) {
+                    tickExplosion();
+                }
+                else {
+                    _isStateOver = true;
+                }
                 break;
         }
     }
@@ -280,6 +290,7 @@ public class BombarderoGameState implements GameState {
                 tablero[xAvion - 1][yAvion].setTile(Logica.Colores.rojo, Logica.info.nada); //borrar la cola
                 //Cambio de estado
                 gameOver = true;
+                estadoActual = Estados.LOSE;
             }
 
         }
@@ -295,26 +306,13 @@ public class BombarderoGameState implements GameState {
                 xBomba = xAvion;
                 yBomba = yAvion + 1;
                 tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.bomba);
+
             }
         }
 
         if (numBombas >= 1) {
             //Comprobamos colisiones
             if (tablero[xBomba][yBomba + 1].get_infoTile() == Logica.info.tejado || tablero[xBomba][yBomba + 1].get_infoTile() == Logica.info.edificio) {
-
-                /*int edificiosDestruidos = rnd.nextInt(3)+2;
-                int i = 1;
-                while (i <= edificiosDestruidos && yBomba + i <= 22) {
-                    tablero[xBomba][yBomba + i - 1].setTile(Logica.Colores.rojo, Logica.info.nada);
-                    tablero[xBomba][yBomba + i].setTile(Logica.Colores.rojo, Logica.info.explosion1);
-                    i++;
-                }
-
-                //Resgistramos la última explosion
-                Tile expl = tablero[xBomba][yBomba + (i - 1)];
-                listaExplosiones.add(expl);
-                _logica.setPuntosActuales(_logica.getPuntosActuales() + (puntosPorEdificio * i));
-                numBombas--;*/
 
                 if (edificiosDestruidos > 0) {
                     tablero[xBomba][yBomba].setTile(Logica.Colores.rojo, Logica.info.nada);

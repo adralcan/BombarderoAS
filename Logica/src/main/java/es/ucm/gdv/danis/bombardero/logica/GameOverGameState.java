@@ -7,41 +7,40 @@ import es.ucm.gdv.danis.bombardero.fachada.Game;
 import es.ucm.gdv.danis.bombardero.fachada.GameState;
 import es.ucm.gdv.danis.bombardero.fachada.TouchEvent;
 
-public class InicioGameState implements GameState {
+public class GameOverGameState implements GameState {
 
+    //Atributos
     private Game _juego;
     ResourceManager _resourceManager;
     Logica _logica;
-
     Boolean _isStateOver;
 
     //Texto
     LinkedList<Parrafo> parrafos;
+    boolean _textosCargados;
 
-    //Atributos
+
+    //Atributos tiles
     private static int _TileSizeX, _TileSizeY;
     private static int _anchoTexto, _altoTexto;
 
     int _marginX;
     int _marginY;
 
-    boolean _textosCargados;
-
-
-    public InicioGameState(ResourceManager res, Game juego, Logica l) {
+    public GameOverGameState(ResourceManager res, Game juego, Logica l){
         _resourceManager = res;
         _juego = juego;
         _logica = l;
 
         parrafos = new LinkedList<>();
-
         _isStateOver = false;
         _textosCargados = false;
-        _marginY = _marginX = 16;
 
+        _marginY = _marginX = 16;
 
         initTexto();
     }
+
 
     private void calculateTileDimensions() {
 
@@ -55,8 +54,6 @@ public class InicioGameState implements GameState {
                 _altoTexto++;
             }
         }
-
-
         float tileAR = 0.0f;
 
         _TileSizeX = _juego.GetGraphics().getWidth() / (_anchoTexto);
@@ -74,38 +71,15 @@ public class InicioGameState implements GameState {
         }
     }
 
-    private void initTexto() {
+    public void initTexto(){
 
         parrafos = new LinkedList<>(); //Clear no funciona como queremos
         LinkedList<String> listaAux = new LinkedList<>();
         Parrafo aux = null;
 
-
-        listaAux.add("");
-        listaAux.add("Usted esta pilotando un avion sobre una");
-        listaAux.add("ciudad desierta y tiene que pasar sobre");
-        listaAux.add("los edificios para aterrizar y repos-");
-        listaAux.add("tar. Su avion se mueve de izquierda a");
-        listaAux.add("derecha.");
-        listaAux.add(" ");
-        listaAux.add("Al llegar a la derecha, el avion vuelve");
-        listaAux.add("a salir por la izquierda, pero MAS BAJO.");
-        listaAux.add("Dispone de un numero limitado de bombas");
-        listaAux.add("y puede hacerlas caer sobre los edifi-");
-        listaAux.add("cios pulsando sobre la pantalla.");
-        listaAux.add(" ");
-        listaAux.add("Cada vez que aterriza, sube la altura");
-        listaAux.add("de los edificios y la velocidad.");
-        listaAux.add(" ");
-        listaAux.add("UNA VEZ DISPARADA UNA BOMBA, YA NO PUEDE");
-        listaAux.add("DISPARAR OTRA MIENTRAS NO HAYA EXPLOSIO-");
-        listaAux.add("NADO LA PRIMERA!!!!");
-        listaAux.add("");
-        aux = new Parrafo(listaAux, Logica.Colores.verde);
-        parrafos.add(aux);
-
         listaAux = new LinkedList<>();
-        listaAux.add("Pulse para empezar");
+        listaAux.add("Has conseguido " + _logica.getPuntosActuales());
+        listaAux.add("aaaaaaaaaaaAAAAAAAAAAAA");
         aux = new Parrafo(listaAux, Logica.Colores.rojo);
         parrafos.add(aux);
 
@@ -125,7 +99,6 @@ public class InicioGameState implements GameState {
 
                 for (int j = 0; j < chars.length; j++) {
                     int coordX = _TileSizeX * j;
-
                     Tile tmpTile = new Tile(_resourceManager, chars[j], parrafos.get(i).color, i, j, _TileSizeX * j, _TileSizeY * (i + contY) + _marginY / 2, _TileSizeX, _TileSizeY);
                     //Tile tmpTile = new Tile(_resourceManager, i, j, _TileSizeX * j,  _TileSizeY * (i + cont) + _marginY / 2, _TileSizeX, _TileSizeY, Logica.Colores.azulClaro, Logica.info.nada);
 
@@ -137,6 +110,8 @@ public class InicioGameState implements GameState {
         _textosCargados = true;
     }
 
+
+
     @Override
     public void tick(double elapsedTime) {
         List<TouchEvent> touchEvents = _juego.GetInput().getTouchEvents();
@@ -145,14 +120,12 @@ public class InicioGameState implements GameState {
                 _isStateOver = true;
             }
         }
-
     }
 
     @Override
     public void render() {
         if (_textosCargados) {
             for (Parrafo parr : parrafos) {
-
                 for (int i = 0; i < parr.tiles.size(); i++) {
                     parr.tiles.get(i).drawTile(_juego.GetGraphics());
                 }
@@ -162,7 +135,7 @@ public class InicioGameState implements GameState {
 
     @Override
     public float getVelocity() {
-        return 1;
+        return 0.5f;
     }
 
     @Override
