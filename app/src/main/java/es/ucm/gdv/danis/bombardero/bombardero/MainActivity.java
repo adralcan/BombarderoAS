@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         _renderView.Pause();
     }
 
-    //Clase que recubre SurfaceView
+    //Clase que recubre SurfaceView e implementa el Android Game
     class MyView extends SurfaceView implements Runnable, Game {
 
         public MyView(Context context) {

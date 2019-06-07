@@ -100,7 +100,7 @@ public class SettingsGameState implements GameState {
                     parrafos.add(aux);
 
                     listaAux = new LinkedList<>();
-                    listaAux.add("               0 1 2 3 4 5");
+                    listaAux.add("             0 1 2 3 4 5");
                     aux = new Parrafo(listaAux, Logica.Colores.blanco);
                     parrafos.add(aux);
                     break;
@@ -111,12 +111,12 @@ public class SettingsGameState implements GameState {
                     parrafos.add(aux);
 
                     listaAux = new LinkedList<>();
-                    listaAux.add("               0 1 2 3 4");
+                    listaAux.add("             0 1 2 3 4");
                     aux = new Parrafo(listaAux, Logica.Colores.blanco);
                     parrafos.add(aux);
 
                     listaAux = new LinkedList<>();
-                    listaAux.add("               5 6 7 8 9");
+                    listaAux.add("             5 6 7 8 9");
                     aux = new Parrafo(listaAux, Logica.Colores.blanco);
                     parrafos.add(aux);
 
